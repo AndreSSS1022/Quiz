@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Party Finder', 
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 58, 68, 183)),
       ),
       home: const MyHomePage(title: 'Party Finder'), 
     );
@@ -48,33 +48,137 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.only(top: 40, bottom: 16),
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFF3A44B7), Color(0xFF6C63FF)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    child: IconButton(
+                      icon: const Icon(Icons.close, color: Colors.white),
+                      onPressed: () => Navigator.of(context).pop(),
+                      tooltip: 'Cerrar menú',
+                    ),
+                  ),
+                  // Contenido centrado
+                  Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        CircleAvatar(
+                          radius: 36,
+                          backgroundImage: AssetImage('assets/avatar.png'),
+                          backgroundColor: Colors.white,
+                        ),
+                        SizedBox(height: 12),
+                        Text(
+                          '¡Hola, Andres!',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          'andres@gmail.com',
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.person, color: Color(0xFF3A44B7), size: 28),
+                    title: const Text('Perfil', style: TextStyle(fontSize: 18)),
+                    onTap: () => Navigator.pop(context),
+                  ),
+                  const Divider(),
+                  ListTile(
+                    leading: const Icon(Icons.category, color: Color(0xFF6C63FF), size: 28),
+                    title: const Text('Categorías', style: TextStyle(fontSize: 18)),
+                    onTap: () => Navigator.pop(context),
+                  ),
+                  const Divider(),
+                  ListTile(
+                    leading: const Icon(Icons.book_online, color: Color(0xFF3A44B7), size: 28),
+                    title: const Text('Reservas', style: TextStyle(fontSize: 18)),
+                    onTap: () => Navigator.pop(context),
+                  ),
+                  const Divider(),
+                  ListTile(
+                    leading: const Icon(Icons.settings, color: Color(0xFF6C63FF), size: 28),
+                    title: const Text('Ajustes', style: TextStyle(fontSize: 18)),
+                    onTap: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
       appBar: AppBar(
-        backgroundColor: Colors.purple,
-        title: AnimatedContainer(
+        backgroundColor: const Color.fromARGB(255, 44, 39, 176),
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+            tooltip: 'Menú',
+          ),
+        ),
+        centerTitle: true,
+        title: AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
-          width: _showSearch ? 300 : 200, 
-          height: 40,
-          decoration: BoxDecoration(
-            color: _showSearch ? Colors.white.withOpacity(0.15) : Colors.transparent,
-            borderRadius: BorderRadius.circular(20),
+          transitionBuilder: (child, animation) => FadeTransition(
+            opacity: animation,
+            child: SizeTransition(
+              sizeFactor: animation,
+              axis: Axis.horizontal,
+              child: child,
+            ),
           ),
           child: _showSearch
-              ? TextField(
-                  controller: _searchController,
-                  autofocus: true,
-                  style: const TextStyle(color: Colors.white),
-                  cursorColor: Colors.white,
-                  decoration: const InputDecoration(
-                    hintText: 'Buscar fiestas...',
-                    hintStyle: TextStyle(color: Colors.white70),
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16),
+              ? SizedBox(
+                  key: const ValueKey('searchField'),
+                  height: 40,
+                  child: TextField(
+                    controller: _searchController,
+                    autofocus: true,
+                    style: const TextStyle(color: Colors.white),
+                    cursorColor: Colors.white,
+                    decoration: const InputDecoration(
+                      hintText: 'Buscar fiestas...',
+                      hintStyle: TextStyle(color: Colors.white70),
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                    ),
+                    onSubmitted: (value) {},
                   ),
-                  onSubmitted: (value) {
-                  },
                 )
               : Text(
                   widget.title,
+                  key: const ValueKey('title'),
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -89,6 +193,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
         elevation: 4,
+        toolbarHeight: 64, 
       ),
       body: Center(
         child: Column(
