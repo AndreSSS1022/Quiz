@@ -72,14 +72,13 @@ class _MyHomePageState extends State<MyHomePage> {
                       tooltip: 'Cerrar menú',
                     ),
                   ),
-                  // Contenido centrado
                   Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: const [
                         CircleAvatar(
                           radius: 36,
-                          backgroundImage: AssetImage('assets/avatar.png'),
+                          backgroundImage: AssetImage('assets/perfil.JPG'),
                           backgroundColor: Colors.white,
                         ),
                         SizedBox(height: 12),
@@ -195,21 +194,145 @@ class _MyHomePageState extends State<MyHomePage> {
         elevation: 4,
         toolbarHeight: 64, 
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const <Widget>[
-            Text(
-              'Bienvenido a Party Finder',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          BarCard(
+            image: 'assets/bar1.jpg',
+            name: 'Dakiti Club',
+            address: 'Carrera 22 #52, Bogotá',
+            distance: '800 m',
+            tags: const ['Crossover'],
+          ),
+          const SizedBox(height: 16),
+          BarCard(
+            image: 'assets/bar2.jpg',
+            name: 'Theatron',
+            address: 'Calle 58 Bis #10 - 32, Bogotá',
+            distance: '1,2 km',
+            tags: const ['Croosver', 'Pop', 'Electrónica'],
+          ),
+          const SizedBox(height: 16),
+          BarCard(
+            image: 'assets/bar3.jpg',
+            name: 'Clandestino',
+            address: 'Calle 84A # 12-50, Bogotá',
+            distance: '2 km',
+            tags: const ['Salsa', 'Latino','crossover'],
+          ),
+          const SizedBox(height: 16),
+          BarCard(
+            image: 'assets/bar4.jpg',
+            name: 'La Negra',
+            address: 'Calle 100 #15-20, Bogotá',
+            distance: '2,5 km',
+            tags: const ['Latino', 'Caribeña'],
+          ),
+          const SizedBox(height: 16),
+          BarCard(
+            image: 'assets/bar5.jpg',
+            name: 'Presea Bar',
+            address: 'Cra 13 #50-60, Bogotá',
+            distance: '3 km',
+            tags: const ['Techno', 'After Party'],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class BarCard extends StatelessWidget {
+  final String image;
+  final String name;
+  final String address;
+  final String distance;
+  final List<String> tags;
+
+  const BarCard({
+    super.key,
+    required this.image,
+    required this.name,
+    required this.address,
+    required this.distance,
+    required this.tags,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+            child: Image.asset(
+              image,
+              width: double.infinity,
+              height: 180,
+              fit: BoxFit.cover,
             ),
-            SizedBox(height: 16),
-            Text(
-              'Encuentra las mejores fiestas en Bogotá',
-              style: TextStyle(fontSize: 16),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    const Icon(Icons.location_on, size: 16),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        address,
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    const Icon(Icons.access_time, size: 16),
+                    const SizedBox(width: 4),
+                    Text(
+                      distance,
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  children: tags
+                      .map(
+                        (tag) => Chip(
+                          label: Text(tag),
+                          backgroundColor: const Color(0xFFE0E0E0),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                      )
+                      .toList(),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
