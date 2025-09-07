@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart'; 
 
 void main() {
   runApp(const MyApp());
@@ -31,6 +32,52 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   bool _showSearch = false;
   final TextEditingController _searchController = TextEditingController();
+
+  // Datos de los bares
+  final List<Map<String, dynamic>> bars = [
+    {
+      'image': 'assets/bar1.jpg',
+      'name': 'Dakiti Club',
+      'address': 'Carrera 22 #52, Bogotá',
+      'distance': '800 m',
+      'tags': ['Crossover'],
+      'desc': 'Un club con ambiente crossover y la mejor música para bailar toda la noche.',
+    },
+    {
+      'image': 'assets/bar2.jpg',
+      'name': 'Theatron',
+      'address': 'Calle 58 Bis #10 - 32, Bogotá',
+      'distance': '1,2 km',
+      'tags': ['Croosver', 'Pop', 'Electrónica'],
+      'desc': 'El club más grande de Latinoamérica, con múltiples ambientes y géneros.',
+    },
+    {
+      'image': 'assets/bar3.jpg',
+      'name': 'Clandestino',
+      'address': 'Calle 84A # 12-50, Bogotá',
+      'distance': '2 km',
+      'tags': ['Salsa', 'Latino','crossover'],
+      'desc': 'Perfecto para los amantes de la salsa y la música latina.',
+    },
+    {
+      'image': 'assets/bar4.jpg',
+      'name': 'La Negra',
+      'address': 'Calle 100 #15-20, Bogotá',
+      'distance': '2,5 km',
+      'tags': ['Latino', 'Caribeña'],
+      'desc': 'Ambiente caribeño y ritmos latinos para disfrutar con amigos.',
+    },
+    {
+      'image': 'assets/bar5.jpg',
+      'name': 'Presea Bar',
+      'address': 'Cra 13 #50-60, Bogotá',
+      'distance': '3 km',
+      'tags': ['Techno', 'After Party'],
+      'desc': 'El mejor after party con DJs de techno y ambiente underground.',
+    },
+  ];
+
+  int _currentBar = 0;
 
   void _toggleSearch() {
     setState(() {
@@ -197,45 +244,90 @@ class _MyHomePageState extends State<MyHomePage> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          BarCard(
-            image: 'assets/bar1.jpg',
-            name: 'Dakiti Club',
-            address: 'Carrera 22 #52, Bogotá',
-            distance: '800 m',
-            tags: const ['Crossover'],
+          // Carrusel de bares
+          CarouselSlider(
+            items: bars.map((bar) {
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Image.asset(
+                      bar['image'],
+                      fit: BoxFit.cover,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Colors.black.withOpacity(0.5), Colors.transparent],
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          bar['name'],
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            shadows: [Shadow(blurRadius: 8, color: Colors.black)],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
+            options: CarouselOptions(
+              height: 200,
+              autoPlay: true,
+              autoPlayInterval: const Duration(seconds: 5),
+              enlargeCenterPage: true,
+              viewportFraction: 0.9,
+              onPageChanged: (index, reason) {
+                setState(() {
+                  _currentBar = index;
+                });
+              },
+            ),
           ),
-          const SizedBox(height: 16),
-          BarCard(
-            image: 'assets/bar2.jpg',
-            name: 'Theatron',
-            address: 'Calle 58 Bis #10 - 32, Bogotá',
-            distance: '1,2 km',
-            tags: const ['Croosver', 'Pop', 'Electrónica'],
+          const SizedBox(height: 12),
+          // Descripción breve del bar seleccionado
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: Container(
+              key: ValueKey(_currentBar),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+              decoration: BoxDecoration(
+                color: Colors.deepPurple.shade50,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                bars[_currentBar]['desc'],
+                style: const TextStyle(fontSize: 15, color: Color(0xFF3A44B7)),
+              ),
+            ),
           ),
-          const SizedBox(height: 16),
-          BarCard(
-            image: 'assets/bar3.jpg',
-            name: 'Clandestino',
-            address: 'Calle 84A # 12-50, Bogotá',
-            distance: '2 km',
-            tags: const ['Salsa', 'Latino','crossover'],
-          ),
-          const SizedBox(height: 16),
-          BarCard(
-            image: 'assets/bar4.jpg',
-            name: 'La Negra',
-            address: 'Calle 100 #15-20, Bogotá',
-            distance: '2,5 km',
-            tags: const ['Latino', 'Caribeña'],
-          ),
-          const SizedBox(height: 16),
-          BarCard(
-            image: 'assets/bar5.jpg',
-            name: 'Presea Bar',
-            address: 'Cra 13 #50-60, Bogotá',
-            distance: '3 km',
-            tags: const ['Techno', 'After Party'],
-          ),
+          const SizedBox(height: 24),
+          // Cards de bares
+          ...bars.map((bar) => Column(
+                children: [
+                  BarCard(
+                    image: bar['image'],
+                    name: bar['name'],
+                    address: bar['address'],
+                    distance: bar['distance'],
+                    tags: List<String>.from(bar['tags']),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              )),
         ],
       ),
     );
