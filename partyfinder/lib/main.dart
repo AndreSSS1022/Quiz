@@ -5,6 +5,7 @@ void main() {
   runApp(const MyApp());
 }
 
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -14,24 +15,12 @@ class MyApp extends StatelessWidget {
       title: 'Party Finder',
       theme: ThemeData(
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: const Color(0xFF181824), 
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF00F6FF), 
-          brightness: Brightness.dark,
-          primary: const Color(0xFF00F6FF),   
-          secondary: const Color(0xFFFF00A6), 
+        scaffoldBackgroundColor: const Color(0xFF1B263B), 
+        colorScheme: ColorScheme.dark(
+          primary: const Color(0xFF185ADB), 
+          secondary: const Color(0xFF0A2342), 
         ),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          iconTheme: IconThemeData(color: Colors.white),
-          titleTextStyle: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 26,
-          ),
-        ),
-        cardColor: const Color(0xFF232336), 
+        cardColor: const Color(0xFF222B45), 
       ),
       home: const MyHomePage(title: 'PartyFinder'),
       debugShowCheckedModeBanner: false,
@@ -41,7 +30,6 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
   final String title;
 
   @override
@@ -52,17 +40,14 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _showSearch = false;
   final TextEditingController _searchController = TextEditingController();
   String _searchText = '';
+  int _selectedIndex = 0;
 
-  
-  final Color neonBlue = const Color(0xFF00F6FF);
-  final Color neonPink = const Color(0xFFFF00A6);
-  final Color neonPurple = const Color(0xFF8A2BE2);
-  final Color neonGreen = const Color(0xFF39FF14);
-  final Color neonYellow = const Color(0xFFFFD93D);
-  final Color darkBg = const Color(0xFF181824);
-  final Color cardBg = const Color(0xFF232336);
+  final Color darkBlue = const Color(0xFF0A2342);
+  final Color midBlue = const Color(0xFF185ADB);
+  final Color bgBlue = const Color(0xFF1B263B);
+  final Color cardBlue = const Color(0xFF222B45);
+  final Color accentYellow = const Color(0xFFFFD93D);
 
-  // Datos de los bares
   final List<Map<String, dynamic>> bars = [
     {
       'image': 'assets/bar1.jpg',
@@ -142,113 +127,12 @@ class _MyHomePageState extends State<MyHomePage> {
           }).toList();
 
     return Scaffold(
-      drawer: Drawer(
-        child: Column(
-          children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.only(top: 40, bottom: 16),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [neonBlue, neonPink],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-              child: Stack(
-                children: [
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    child: IconButton(
-                      icon: const Icon(Icons.close, color: Colors.white),
-                      onPressed: () => Navigator.of(context).pop(),
-                      tooltip: 'Cerrar menú',
-                    ),
-                  ),
-                  Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const CircleAvatar(
-                          radius: 36,
-                          backgroundImage: AssetImage('assets/perfil.JPG'),
-                          backgroundColor: Colors.white,
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          '¡Hola, Andres!',
-                          style: TextStyle(
-                            color: Color(0xFFFFFFFF),
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            shadows: [
-                              Shadow(
-                                blurRadius: 12,
-                                color: neonPink.withOpacity(0.7),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'andres@gmail.com',
-                          style: TextStyle(
-                            color: neonBlue,
-                            fontSize: 14,
-                            shadows: [
-                              Shadow(
-                                blurRadius: 8,
-                                color: neonBlue.withOpacity(0.7),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: [
-                  ListTile(
-                    leading: Icon(Icons.person, color: neonPink, size: 28),
-                    title: const Text('Perfil', style: TextStyle(fontSize: 18, color: Colors.white)),
-                    onTap: () => Navigator.pop(context),
-                  ),
-                  const Divider(),
-                  ListTile(
-                    leading: Icon(Icons.category, color: neonBlue, size: 28),
-                    title: const Text('Categorías', style: TextStyle(fontSize: 18, color: Colors.white)),
-                    onTap: () => Navigator.pop(context),
-                  ),
-                  const Divider(),
-                  ListTile(
-                    leading: Icon(Icons.book_online, color: neonGreen, size: 28),
-                    title: const Text('Reservas', style: TextStyle(fontSize: 18, color: Colors.white)),
-                    onTap: () => Navigator.pop(context),
-                  ),
-                  const Divider(),
-                  ListTile(
-                    leading: Icon(Icons.settings, color: neonPurple, size: 28),
-                    title: const Text('Ajustes', style: TextStyle(fontSize: 18, color: Colors.white)),
-                    onTap: () => Navigator.pop(context),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70),
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [neonBlue, neonPink],
+              colors: [midBlue, darkBlue],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -258,7 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
             elevation: 0,
             leading: Builder(
               builder: (context) => IconButton(
-                icon: const Icon(Icons.menu),
+                icon: const Icon(Icons.menu, color: Colors.white),
                 onPressed: () => Scaffold.of(context).openDrawer(),
                 tooltip: 'Menú',
               ),
@@ -282,7 +166,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         controller: _searchController,
                         autofocus: true,
                         style: const TextStyle(color: Colors.white),
-                        cursorColor: Colors.white,
+                        cursorColor: midBlue,
                         decoration: const InputDecoration(
                           hintText: 'Buscar fiestas...',
                           hintStyle: TextStyle(color: Colors.white70),
@@ -295,33 +179,78 @@ class _MyHomePageState extends State<MyHomePage> {
                   : Text(
                       widget.title,
                       key: const ValueKey('title'),
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 28,
                         letterSpacing: 1.5,
-                        shadows: [
-                          Shadow(
-                            blurRadius: 18,
-                            color: neonPink.withOpacity(0.7),
-                          ),
-                          Shadow(
-                            blurRadius: 32,
-                            color: neonBlue.withOpacity(0.5),
-                          ),
-                        ],
                       ),
                     ),
             ),
             actions: [
               IconButton(
-                icon: Icon(_showSearch ? Icons.close : Icons.search),
+                icon: Icon(_showSearch ? Icons.close : Icons.search, color: Colors.white),
                 onPressed: _toggleSearch,
                 tooltip: _showSearch ? 'Cerrar búsqueda' : 'Buscar',
               ),
             ],
             toolbarHeight: 70,
           ),
+        ),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [midBlue, darkBlue],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  CircleAvatar(
+                    radius: 36,
+                    backgroundImage: AssetImage('assets/perfil.JPG'),
+                    backgroundColor: Colors.white,
+                  ),
+                  SizedBox(height: 12),
+                  Text(
+                    '¡Hola, Andres!',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.person, color: midBlue, size: 28),
+              title: const Text('Perfil', style: TextStyle(fontSize: 18)),
+              onTap: () => Navigator.pop(context),
+            ),
+            ListTile(
+              leading: Icon(Icons.category, color: midBlue, size: 28),
+              title: const Text('Categorías', style: TextStyle(fontSize: 18)),
+              onTap: () => Navigator.pop(context),
+            ),
+            ListTile(
+              leading: Icon(Icons.book_online, color: midBlue, size: 28),
+              title: const Text('Reservas', style: TextStyle(fontSize: 18)),
+              onTap: () => Navigator.pop(context),
+            ),
+            ListTile(
+              leading: Icon(Icons.settings, color: midBlue, size: 28),
+              title: const Text('Ajustes', style: TextStyle(fontSize: 18)),
+              onTap: () => Navigator.pop(context),
+            ),
+          ],
         ),
       ),
       body: ListView(
@@ -335,20 +264,14 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
-                      ColorFiltered(
-                        colorFilter: const ColorFilter.mode(
-                          Colors.transparent,
-                          BlendMode.saturation,
-                        ),
-                        child: Image.asset(
-                          bar['image'],
-                          fit: BoxFit.cover,
-                        ),
+                      Image.asset(
+                        bar['image'],
+                        fit: BoxFit.cover,
                       ),
                       Container(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
-                            colors: [Colors.black.withOpacity(0.6), Colors.transparent],
+                            colors: [Colors.black.withOpacity(0.5), Colors.transparent],
                             begin: Alignment.bottomCenter,
                             end: Alignment.topCenter,
                           ),
@@ -371,11 +294,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   shadows: [
                                     Shadow(
                                       blurRadius: 16,
-                                      color: neonPink.withOpacity(0.7),
-                                    ),
-                                    Shadow(
-                                      blurRadius: 32,
-                                      color: neonBlue.withOpacity(0.5),
+                                      color: Colors.white.withOpacity(0.7),
                                     ),
                                   ],
                                 ),
@@ -383,16 +302,10 @@ class _MyHomePageState extends State<MyHomePage> {
                               const SizedBox(height: 4),
                               Text(
                                 bar['desc'],
-                                style: TextStyle(
-                                  color: Colors.white70,
+                                style: const TextStyle(
+                                  color: Colors.white,
                                   fontSize: 14,
                                   fontWeight: FontWeight.w400,
-                                  shadows: [
-                                    Shadow(
-                                      blurRadius: 8,
-                                      color: neonBlue.withOpacity(0.4),
-                                    ),
-                                  ],
                                 ),
                               ),
                             ],
@@ -418,7 +331,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             const SizedBox(height: 12),
           ],
-          
           ...filteredBars.map((bar) => Column(
                 children: [
                   BarCard(
@@ -427,6 +339,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     address: bar['address'],
                     distance: bar['distance'],
                     tags: List<String>.from(bar['tags']),
+                    midBlue: midBlue,
+                    darkBlue: darkBlue,
+                    accentYellow: accentYellow,
+                    cardBlue: cardBlue,
                   ),
                   const SizedBox(height: 16),
                 ],
@@ -443,16 +359,67 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
         ],
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white,
+        selectedItemColor: midBlue,
+        unselectedItemColor: Colors.black54,
+        currentIndex: _selectedIndex,
+        onTap: (i) => setState(() => _selectedIndex = i),
+        type: BottomNavigationBarType.fixed,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        items: [
+          BottomNavigationBarItem(
+            icon: CircleAvatar(
+              backgroundColor: _selectedIndex == 0 ? midBlue : Colors.white,
+              child: Icon(Icons.place, color: _selectedIndex == 0 ? Colors.white : Colors.black),
+            ),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: CircleAvatar(
+              backgroundColor: _selectedIndex == 1 ? midBlue : Colors.white,
+              child: Icon(Icons.favorite, color: _selectedIndex == 1 ? Colors.white : Colors.black),
+            ),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: CircleAvatar(
+              backgroundColor: _selectedIndex == 2 ? midBlue : Colors.white,
+              child: Icon(Icons.person, color: _selectedIndex == 2 ? Colors.white : Colors.black),
+            ),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: CircleAvatar(
+              backgroundColor: _selectedIndex == 3 ? midBlue : Colors.white,
+              child: Icon(Icons.phone, color: _selectedIndex == 3 ? Colors.white : Colors.black),
+            ),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: CircleAvatar(
+              backgroundColor: _selectedIndex == 4 ? midBlue : Colors.white,
+              child: Icon(Icons.notifications, color: _selectedIndex == 4 ? Colors.white : Colors.black),
+            ),
+            label: '',
+          ),
+        ],
+      ),
     );
   }
 }
 
-class BarCard extends StatefulWidget {
+class BarCard extends StatelessWidget {
   final String image;
   final String name;
   final String address;
   final String distance;
   final List<String> tags;
+  final Color midBlue;
+  final Color darkBlue;
+  final Color accentYellow;
+  final Color cardBlue;
 
   const BarCard({
     super.key,
@@ -461,143 +428,87 @@ class BarCard extends StatefulWidget {
     required this.address,
     required this.distance,
     required this.tags,
+    required this.midBlue,
+    required this.darkBlue,
+    required this.accentYellow,
+    required this.cardBlue,
   });
 
   @override
-  State<BarCard> createState() => _BarCardState();
-}
-
-class _BarCardState extends State<BarCard> {
-  bool _hovered = false;
-
-  @override
   Widget build(BuildContext context) {
-    final neonBlue = const Color(0xFF00F6FF);
-    final neonPink = const Color(0xFFFF00A6);
-    final neonPurple = const Color(0xFF8A2BE2);
-    final neonGreen = const Color(0xFF39FF14);
-    final cardBg = const Color(0xFF232336);
-
-    return MouseRegion(
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
-        curve: Curves.easeOut,
-        margin: const EdgeInsets.symmetric(vertical: 8),
-        decoration: BoxDecoration(
-          color: cardBg,
-          borderRadius: BorderRadius.circular(28),
-          boxShadow: _hovered
-              ? [
-                  BoxShadow(
-                    color: neonPink.withOpacity(0.5),
-                    blurRadius: 24,
-                    spreadRadius: 2,
+    return Card(
+      elevation: 6,
+      color: cardBlue,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+            child: Image.asset(
+              image,
+              width: double.infinity,
+              height: 180,
+              fit: BoxFit.cover,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: midBlue,
                   ),
-                  BoxShadow(
-                    color: neonBlue.withOpacity(0.3),
-                    blurRadius: 48,
-                    spreadRadius: 2,
-                  ),
-                ]
-              : [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
-                    blurRadius: 8,
-                  ),
-                ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(28),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ColorFiltered(
-                colorFilter: const ColorFilter.mode(
-                  Colors.transparent,
-                  BlendMode.saturation,
                 ),
-                child: Image.asset(
-                  widget.image,
-                  width: double.infinity,
-                  height: 180,
-                  fit: BoxFit.cover,
-                  color: _hovered ? neonPink.withOpacity(0.15) : null,
-                  colorBlendMode: BlendMode.screen,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                const SizedBox(height: 8),
+                Row(
                   children: [
-                    Text(
-                      widget.name,
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        shadows: [
-                          Shadow(
-                            blurRadius: 12,
-                            color: neonBlue.withOpacity(0.7),
-                          ),
-                          Shadow(
-                            blurRadius: 24,
-                            color: neonPink.withOpacity(0.5),
-                          ),
-                        ],
+                    Icon(Icons.location_on, size: 18, color: accentYellow),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        address,
+                        style: const TextStyle(fontSize: 15, color: Colors.white70),
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Icon(Icons.location_on, size: 18, color: neonPink),
-                        const SizedBox(width: 4),
-                        Expanded(
-                          child: Text(
-                            widget.address,
-                            style: const TextStyle(fontSize: 15, color: Colors.white70),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Icon(Icons.access_time, size: 18, color: neonBlue),
-                        const SizedBox(width: 4),
-                        Text(
-                          widget.distance,
-                          style: const TextStyle(fontSize: 15, color: Colors.white70),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Wrap(
-                      spacing: 8,
-                      children: widget.tags.map((tag) {
-                        Color borderColor = neonPink;
-                        if (tag.toLowerCase().contains('electrónica')) borderColor = neonBlue;
-                        if (tag.toLowerCase().contains('salsa')) borderColor = neonGreen;
-                        if (tag.toLowerCase().contains('reggaetón')) borderColor = neonPink;
-                        if (tag.toLowerCase().contains('techno')) borderColor = neonPurple;
-                        return Chip(
-                          label: Text(
-                            tag,
-                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                          ),
-                          backgroundColor: Colors.transparent,
-                          shape: StadiumBorder(
-                            side: BorderSide(color: borderColor, width: 2),
-                          ),
-                          side: BorderSide(color: borderColor, width: 2),
-                        );
-                      }).toList(),
+                    const SizedBox(width: 8),
+                    Icon(Icons.access_time, size: 18, color: midBlue),
+                    const SizedBox(width: 4),
+                    Text(
+                      distance,
+                      style: const TextStyle(fontSize: 15, color: Colors.white70),
                     ),
                   ],
                 ),
-              ),
-            ],
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  children: tags.map((tag) {
+                    Color chipColor = midBlue;
+                    if (tag.toLowerCase().contains('electrónica')) chipColor = darkBlue;
+                    if (tag.toLowerCase().contains('salsa')) chipColor = accentYellow;
+                    if (tag.toLowerCase().contains('reggaetón')) chipColor = midBlue;
+                    if (tag.toLowerCase().contains('techno')) chipColor = darkBlue;
+                    return Chip(
+                      label: Text(
+                        tag,
+                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                      backgroundColor: chipColor,
+                    );
+                  }).toList(),
+                ),
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
