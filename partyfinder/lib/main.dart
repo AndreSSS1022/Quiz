@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'login.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -22,8 +24,12 @@ class MyApp extends StatelessWidget {
         ),
         cardColor: const Color(0xFF222B45), 
       ),
-      home: const MyHomePage(title: 'PartyFinder'),
+      home: const Login(),
       debugShowCheckedModeBanner: false,
+      routes: {
+        '/login': (context) => const Login(),
+        '/home': (context) => const MyHomePage(title: 'PartyFinder'),
+      },
     );
   }
 }
