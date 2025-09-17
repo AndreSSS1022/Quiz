@@ -122,6 +122,14 @@ class _LoginScreenState extends State<Login> {
                         child: const Text('Ingresar'),
                       ),
                     ),
+                    const SizedBox(height: 12),
+                    TextButton(
+                      onPressed: () => Navigator.pushNamed(context, '/register'),
+                      child: const Text(
+                        '¿No tienes cuenta? Regístrate',
+                        style: TextStyle(color: Colors.white70),
+                      ),
+                    ),
                   ],
                 ),
               ),
