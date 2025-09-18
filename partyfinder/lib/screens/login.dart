@@ -77,8 +77,16 @@ class _LoginScreenState extends State<Login> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      validator: (v) =>
-                          (v == null || v.trim().isEmpty) ? 'Ingresa tu correo' : null,
+                      validator: (v) {
+                        if (v == null || v.trim().isEmpty) {
+                          return 'Ingresa tu correo';
+                        }
+                        final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                        if (!emailRegex.hasMatch(v.trim())) {
+                          return 'Ingresa un correo válido';
+                        }
+                        return null;
+                      },
                     ),
                     const SizedBox(height: 12),
                     TextFormField(

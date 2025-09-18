@@ -13,6 +13,8 @@ class _RegisterScreenState extends State<Register> {
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
   final _confirmCtrl = TextEditingController();
+  DateTime? _birthDate;
+  String? _birthDateError;
   bool _obscure = true;
   bool _obscureConfirm = true;
 
@@ -25,8 +27,43 @@ class _RegisterScreenState extends State<Register> {
   }
 
   void _register() {
+    setState(() {
+      _birthDateError = null;
+    });
+    if (_birthDate == null) {
+      setState(() {
+        _birthDateError = 'Selecciona tu fecha de nacimiento';
+      });
+      return;
+    }
+    final now = DateTime.now();
+    final age = now.year - _birthDate!.year - ((now.month < _birthDate!.month || (now.month == _birthDate!.month && now.day < _birthDate!.day)) ? 1 : 0);
+    if (age < 18) {
+      setState(() {
+        _birthDateError = 'Debes ser mayor de 18 años';
+      });
+      return;
+    }
     if (_formKey.currentState!.validate()) {
       Navigator.pushReplacementNamed(context, '/home');
+    }
+  }
+
+  Future<void> _selectBirthDate(BuildContext context) async {
+    final now = DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime(now.year - 18, now.month, now.day),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(now.year - 18, now.month, now.day),
+      helpText: 'Selecciona tu fecha de nacimiento',
+      locale: const Locale('es', 'ES'),
+    );
+    if (picked != null) {
+      setState(() {
+        _birthDate = picked;
+        _birthDateError = null;
+      });
     }
   }
 
@@ -80,8 +117,16 @@ class _RegisterScreenState extends State<Register> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      validator: (v) =>
-                          (v == null || v.trim().isEmpty) ? 'Ingresa tu correo' : null,
+                      validator: (v) {
+                        if (v == null || v.trim().isEmpty) {
+                          return 'Ingresa tu correo';
+                        }
+                        final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                        if (!emailRegex.hasMatch(v.trim())) {
+                          return 'Ingresa un correo válido';
+                        }
+                        return null;
+                      },
                     ),
                     const SizedBox(height: 12),
                     TextFormField(
@@ -135,6 +180,37 @@ class _RegisterScreenState extends State<Register> {
                       validator: (v) =>
                           v != _passCtrl.text ? 'Las contraseñas no coinciden' : null,
                     ),
+                    const SizedBox(height: 12),
+                    GestureDetector(
+                      onTap: () => _selectBirthDate(context),
+                      child: AbsorbPointer(
+                        child: TextFormField(
+                          style: const TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            labelText: 'Fecha de nacimiento',
+                            labelStyle: const TextStyle(color: Colors.white70),
+                            prefixIcon: const Icon(Icons.cake, color: Colors.white70),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.white24),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.white70),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            hintText: 'Selecciona tu fecha de nacimiento',
+                            hintStyle: const TextStyle(color: Colors.white38),
+                            errorText: _birthDateError,
+                          ),
+                          controller: TextEditingController(
+                            text: _birthDate == null
+                                ? ''
+                                : '${_birthDate!.day.toString().padLeft(2, '0')}/${_birthDate!.month.toString().padLeft(2, '0')}/${_birthDate!.year}',
+                          ),
+                          readOnly: true,
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 20),
                     SizedBox(
                       width: double.infinity,
@@ -149,6 +225,16 @@ class _RegisterScreenState extends State<Register> {
                           foregroundColor: Colors.white,
                         ),
                         child: const Text('Registrarse'),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(context, '/login');
+                      },
+                      child: const Text(
+                        '¿Ya tienes cuenta? Inicia sesión',
+                        style: TextStyle(color: Colors.white70),
                       ),
                     ),
                   ],

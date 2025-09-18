@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'screens/login.dart';
 import 'screens/home.dart';
 import 'screens/register.dart';
@@ -30,6 +31,15 @@ class MyApp extends StatelessWidget {
         '/home': (context) => const MyHomePage(title: 'PartyFinder'),
         '/register': (context) => const Register(),
       },
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('es', 'ES'),
+        Locale('en', 'US'),
+      ],
     );
   }
 }
