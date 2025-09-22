@@ -1,5 +1,7 @@
+
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import '../auth_service.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -8,15 +10,17 @@ class Register extends StatefulWidget {
   State<Register> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<Register> {
   final _formKey = GlobalKey<FormState>();
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
   final _confirmCtrl = TextEditingController();
+  final AuthService _authService = AuthService();
   DateTime? _birthDate;
   String? _birthDateError;
   bool _obscure = true;
   bool _obscureConfirm = true;
+  String? _error;
+  String? _success;
 
   @override
   void dispose() {
@@ -26,9 +30,11 @@ class _RegisterScreenState extends State<Register> {
     super.dispose();
   }
 
-  void _register() {
+  Future<void> _register() async {
     setState(() {
       _birthDateError = null;
+      _error = null;
+      _success = null;
     });
     if (_birthDate == null) {
       setState(() {
@@ -44,8 +50,21 @@ class _RegisterScreenState extends State<Register> {
       });
       return;
     }
-    if (_formKey.currentState!.validate()) {
-      Navigator.pushReplacementNamed(context, '/home');
+    if (_formKey.currentState?.validate() != true) return;
+    final ok = await _authService.register(
+      _emailCtrl.text.trim(),
+      _passCtrl.text,
+    );
+    if (ok) {
+      setState(() {
+        _success = 'Registro exitoso. Ahora puedes iniciar sesión.';
+        _error = null;
+      });
+    } else {
+      setState(() {
+        _error = 'No se pudo registrar. El usuario puede existir.';
+        _success = null;
+      });
     }
   }
 
@@ -237,6 +256,16 @@ class _RegisterScreenState extends State<Register> {
                         style: TextStyle(color: Colors.white70),
                       ),
                     ),
+                    if (_error != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Text(_error!, style: const TextStyle(color: Colors.red)),
+                      ),
+                    if (_success != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Text(_success!, style: const TextStyle(color: Colors.green)),
+                      ),
                   ],
                 ),
               ),
