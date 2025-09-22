@@ -1,5 +1,8 @@
+
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:local_auth/local_auth.dart';
+import '../auth_service.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -8,11 +11,15 @@ class Login extends StatefulWidget {
   State<Login> createState() => _LoginScreenState();
 }
 
+
 class _LoginScreenState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
+  final AuthService _authService = AuthService();
+  final LocalAuthentication _localAuth = LocalAuthentication();
   bool _obscure = true;
+  String? _error;
 
   @override
   void dispose() {
@@ -21,9 +28,27 @@ class _LoginScreenState extends State<Login> {
     super.dispose();
   }
 
-  void _login() {
-    if (_formKey.currentState!.validate()) {
-      Navigator.pushReplacementNamed(context, '/home');
+
+  Future<void> _login() async {
+    if (_formKey.currentState?.validate() != true) return;
+    final token = await _authService.login(
+      _emailCtrl.text.trim(),
+      _passCtrl.text,
+    );
+    if (token != null) {
+      // Intentar autenticación biométrica
+      final didAuth = await _localAuth.authenticate(
+        localizedReason: 'Autentícate para acceder',
+        options: const AuthenticationOptions(biometricOnly: true),
+      );
+      if (didAuth) {
+        if (!mounted) return;
+        Navigator.pushReplacementNamed(context, '/home');
+      } else {
+        setState(() => _error = 'Autenticación biométrica fallida');
+      }
+    } else {
+      setState(() => _error = 'Usuario o contraseña incorrectos');
     }
   }
 
@@ -138,6 +163,11 @@ class _LoginScreenState extends State<Login> {
                         style: TextStyle(color: Colors.white70),
                       ),
                     ),
+                    if (_error != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Text(_error!, style: const TextStyle(color: Colors.red)),
+                      ),
                   ],
                 ),
               ),
