@@ -10,6 +10,8 @@ class Register extends StatefulWidget {
   State<Register> createState() => _RegisterScreenState();
 }
 
+class _RegisterScreenState extends State<Register> {
+
   final _formKey = GlobalKey<FormState>();
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
@@ -93,7 +95,7 @@ class Register extends StatefulWidget {
         fit: StackFit.expand,
         children: [
           Image.asset(
-            'fondo.png', // Usa la misma imagen que en login
+            'assets/fondo.png', // Fixed path
             fit: BoxFit.cover,
           ),
           BackdropFilter(

@@ -36,16 +36,31 @@ class _LoginScreenState extends State<Login> {
       _passCtrl.text,
     );
     if (token != null) {
-      // Intentar autenticación biométrica
-      final didAuth = await _localAuth.authenticate(
-        localizedReason: 'Autentícate para acceder',
-        options: const AuthenticationOptions(biometricOnly: true),
-      );
-      if (didAuth) {
+      // Intentar autenticación biométrica si está disponible
+      try {
+        final isAvailable = await _localAuth.canCheckBiometrics;
+        final isDeviceSupported = await _localAuth.isDeviceSupported();
+        
+        if (isAvailable && isDeviceSupported) {
+          final didAuth = await _localAuth.authenticate(
+            localizedReason: 'Autentícate para acceder',
+            options: const AuthenticationOptions(biometricOnly: true),
+          );
+          if (didAuth) {
+            if (!mounted) return;
+            Navigator.pushReplacementNamed(context, '/home');
+          } else {
+            setState(() => _error = 'Autenticación biométrica fallida');
+          }
+        } else {
+          // Si no hay biometría disponible, ir directamente al home
+          if (!mounted) return;
+          Navigator.pushReplacementNamed(context, '/home');
+        }
+      } catch (e) {
+        // Si hay error con biometría, ir directamente al home
         if (!mounted) return;
         Navigator.pushReplacementNamed(context, '/home');
-      } else {
-        setState(() => _error = 'Autenticación biométrica fallida');
       }
     } else {
       setState(() => _error = 'Usuario o contraseña incorrectos');
@@ -59,7 +74,7 @@ class _LoginScreenState extends State<Login> {
         fit: StackFit.expand,
         children: [
           Image.asset(
-            'fondo.png', // Cambia por la ruta de tu imagen
+            'assets/fondo.png', // Fixed path
             fit: BoxFit.cover,
           ),
           BackdropFilter(

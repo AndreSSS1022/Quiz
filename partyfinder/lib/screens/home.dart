@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../auth_service.dart';
 
+class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
   final String title;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
+
+class _MyHomePageState extends State<MyHomePage> {
 
   String? _jwt;
   bool _showSearch = false;
@@ -255,20 +258,6 @@ import '../auth_service.dart';
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 16),
-            child: Column(
-              children: [
-                const Text('¡Usuario autenticado exitosamente!'),
-                const SizedBox(height: 8),
-                const Text('Token JWT:'),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(_jwt!, style: const TextStyle(fontSize: 12)),
-                ),
-              ],
-            ),
-          ),
           if (_searchText.isEmpty) ...[
             CarouselSlider(
               items: bars.map((bar) {
