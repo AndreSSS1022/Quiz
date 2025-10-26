@@ -190,6 +190,8 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
+
+      
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -230,12 +232,19 @@ class _MyHomePageState extends State<MyHomePage> {
             ListTile(
               leading: Icon(Icons.category, color: midBlue, size: 28),
               title: const Text('Categorías', style: TextStyle(fontSize: 18)),
-              onTap: () => Navigator.pop(context),
+              onTap: () { Navigator.pop(context);
+              Navigator.pushNamed(context, '/categories');
+              }, 
+
             ),
             ListTile(
               leading: Icon(Icons.book_online, color: midBlue, size: 28),
               title: const Text('Reservas', style: TextStyle(fontSize: 18)),
-              onTap: () => Navigator.pop(context),
+              onTap: () { Navigator.pop(context);
+              Navigator.pushNamed(context, '/bookings'); 
+              },   
+              
+              
             ),
             ListTile(
               leading: Icon(Icons.settings, color: midBlue, size: 28),
