@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../auth_service.dart';
+import 'mapa.dart'; // <-- agregar
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -366,7 +366,40 @@ class _MyHomePageState extends State<MyHomePage> {
         selectedItemColor: midBlue,
         unselectedItemColor: Colors.black54,
         currentIndex: _selectedIndex,
-        onTap: (i) => setState(() => _selectedIndex = i),
+        // Manejar la navegación aquí: actualizar índice y abrir mapa en modal deslizable
+        onTap: (i) async {
+          setState(() => _selectedIndex = i);
+          if (i == 0) {
+            await showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              builder: (context) {
+                return DraggableScrollableSheet(
+                  expand: false,
+                  initialChildSize: 0.9,
+                  minChildSize: 0.4,
+                  maxChildSize: 1.0,
+                  builder: (context, scrollController) {
+                    return Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                        child: SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.9,
+                          child: Mapa(embed: true),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            );
+          }
+        },
         type: BottomNavigationBarType.fixed,
         showSelectedLabels: false,
         showUnselectedLabels: false,
