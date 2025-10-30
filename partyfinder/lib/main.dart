@@ -5,6 +5,8 @@ import 'package:partyfinder/screens/categories.dart';
 import 'screens/login.dart';
 import 'screens/home.dart';
 import 'screens/register.dart';
+import 'screens/userprofile.dart';
+import 'screens/storeprofile.dart';
 
 void main() {
   runApp(const MyApp());
