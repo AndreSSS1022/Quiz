@@ -3,14 +3,14 @@
 
 **Party Finder** es una aplicación móvil en desarrollo creada con **Flutter** que busca ayudar a los usuarios a descubrir bares, discotecas y lugares de fiesta en **Bogotá**.  
 
-Actualmente el proyecto se encuentra en una fase inicial, donde se ha creado la primera vista de la aplicación y se está trabajando en la estructura del proyecto utilizando un flujo de trabajo con ramas.
+Actualmente el proyecto se encuentra en una fase inicial, donde se ha creado las primeras vistas de la aplicación y se está trabajando en la estructura del proyecto utilizando un flujo de trabajo con ramas. Tambien se añade la utilizacion de una API creada para recibir datos y guardarlos con la ayuda de una base de datos simple.
 
 ---
 
 ## 🚀 Estado del Proyecto
 - [x] Creación del proyecto base en Flutter.  
 - [x] Configuración inicial de ramas para el control de versiones.  
-- [ ] Desarrollo de la interfaz principal.  
+- [x] Desarrollo de la interfaz principal.  
 - [ ] Integración de mapa y ubicación.  
 - [ ] Base de datos de bares y discotecas en Bogotá.  
 - [ ] Funcionalidades de búsqueda y filtrado.  
@@ -20,6 +20,7 @@ Actualmente el proyecto se encuentra en una fase inicial, donde se ha creado la 
 ## 🛠️ Tecnologías
 - **Flutter** (Dart)  
 - **Git & GitHub** (flujo de trabajo con ramas)
+- **API** (Guardar datos de la persona)
 
 ---
 
@@ -43,12 +44,11 @@ Se está utilizando un flujo de trabajo basado en ramas para organizar el desarr
 
 ## 📌 Próximos pasos
 - Completar el diseño inicial de la interfaz.  
-- Conectar la aplicación con una fuente de datos (API o base local).  
-- Añadir autenticación para usuarios.  
-
+- Mejorar la vistas de cada procedimiento
+- Añadir ubicaciones e implementar API de geolocalizacion
 ---
 
 ## 👨‍💻 Autor
-Proyecto desarrollado por **Carlos Andres Suarez** como parte de un aprendizaje en Flutter y desarrollo de aplicaciones móviles.
+Proyecto desarrollado por **Carlos Andres Suarez Y Valeria Ospina** como parte de un aprendizaje en Flutter y desarrollo de aplicaciones móviles.
 
 ---
