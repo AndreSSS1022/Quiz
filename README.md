@@ -49,6 +49,6 @@ Se está utilizando un flujo de trabajo basado en ramas para organizar el desarr
 ---
 
 ## 👨‍💻 Autor
-Proyecto desarrollado por **Carlos Andres Suarez Y Valeria Ospina** como parte de un aprendizaje en Flutter y desarrollo de aplicaciones móviles.
+Proyecto desarrollado por **Carlos Andres Suarez, Valeria Ospina, Santiago Daza, Sebastian Sanchez y Nicolas Penagos** como parte de un aprendizaje en Flutter y desarrollo de aplicaciones móviles.
 
 ---
