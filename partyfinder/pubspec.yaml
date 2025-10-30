@@ -33,6 +33,8 @@ dependencies:
   http: ^1.2.2
   flutter:
     sdk: flutter
+  geolocator: ^14.0.2
+  flutter_sensors_plus: ^1.0.1
   cupertino_icons: ^1.0.8
   flutter_carousel_slider: ^1.1.0
   carousel_slider: ^5.1.1
