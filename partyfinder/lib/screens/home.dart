@@ -19,6 +19,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String _searchText = '';
   int _selectedIndex = 0;
   int? _selectedBarIndex;
+  int _currentBar = 0;
 
   final Color darkBlue = const Color(0xFF0A2342);
   final Color midBlue = const Color(0xFF185ADB);
@@ -44,8 +45,6 @@ class _MyHomePageState extends State<MyHomePage> {
       'desc': 'El club más grande de Latinoamérica, con múltiples ambientes y géneros.',
     },
   ];
-
-  int _currentBar = 0;
 
   void _toggleSearch() {
     setState(() {
@@ -107,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
         body: const Center(child: Text('No autenticado')),
       );
     }
-
+  }
     // Vistas de cada sección
     final List<Widget> _pages = [
       // Home
@@ -376,7 +375,8 @@ body: IndexedStack(
 ),
 
 
-// Tarjeta de bar
+}
+
 class BarCard extends StatelessWidget {
   final String image;
   final String name;
