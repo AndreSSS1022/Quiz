@@ -6,6 +6,8 @@ import 'package:partyfinder/screens/categories.dart';
 import 'package:partyfinder/screens/login.dart';
 import 'package:partyfinder/screens/home.dart';
 import 'package:partyfinder/screens/register.dart';
+import 'package:partyfinder/screens/userprofile.dart';
+import 'package:partyfinder/screens/storeprofile.dart';
 
 void main() {
   runApp(const MyApp());
@@ -36,6 +38,8 @@ class MyApp extends StatelessWidget {
         '/mapa':(context)=> const Mapa(),
         '/bookings': (context) => const Bookings(),
         '/categories': (context) => const Categories(), 
+        '/userprofile': (context) => const UserProfile(),
+        '/storeprofile': (context) => const StoreProfile(),
       },
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
