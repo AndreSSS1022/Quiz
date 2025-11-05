@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:partyfinder/screens/mapa.dart';
-import 'screens/login.dart';
-import 'screens/home.dart';
-import 'screens/register.dart';
+import 'package:partyfinder/screens/bookings.dart';
+import 'package:partyfinder/screens/categories.dart';
+import 'package:partyfinder/screens/login.dart';
+import 'package:partyfinder/screens/home.dart';
+import 'package:partyfinder/screens/register.dart';
+import 'package:partyfinder/screens/userprofile.dart';
+import 'package:partyfinder/screens/storeprofile.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,6 +36,10 @@ class MyApp extends StatelessWidget {
         '/home': (context) => const MyHomePage(title: 'PartyFinder'),
         '/register': (context) => const Register(),
         '/mapa':(context)=> const Mapa(),
+        '/bookings': (context) => const Bookings(),
+        '/categories': (context) => const Categories(), 
+        '/userprofile': (context) => const UserProfile(),
+        '/storeprofile': (context) => const StoreProfile(),
       },
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,

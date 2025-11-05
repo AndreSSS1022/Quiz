@@ -1,7 +1,9 @@
+
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../auth_service.dart';
-import 'mapa.dart'; // <-- agregar
+import 'mapa.dart';
+import 'storeprofile.dart'; // <-- agregar
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -190,6 +192,8 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
+
+      
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -225,17 +229,26 @@ class _MyHomePageState extends State<MyHomePage> {
             ListTile(
               leading: Icon(Icons.person, color: midBlue, size: 28),
               title: const Text('Perfil', style: TextStyle(fontSize: 18)),
-              onTap: () => Navigator.pop(context),
+              onTap: () { Navigator.pop(context);
+              Navigator.pushNamed(context, '/userprofile');
+              },
             ),
             ListTile(
               leading: Icon(Icons.category, color: midBlue, size: 28),
               title: const Text('Categorías', style: TextStyle(fontSize: 18)),
-              onTap: () => Navigator.pop(context),
+              onTap: () { Navigator.pop(context);
+              Navigator.pushNamed(context, '/categories');
+              }, 
+
             ),
             ListTile(
               leading: Icon(Icons.book_online, color: midBlue, size: 28),
               title: const Text('Reservas', style: TextStyle(fontSize: 18)),
-              onTap: () => Navigator.pop(context),
+              onTap: () { Navigator.pop(context);
+              Navigator.pushNamed(context, '/bookings'); 
+              },   
+              
+              
             ),
             ListTile(
               leading: Icon(Icons.settings, color: midBlue, size: 28),
@@ -335,7 +348,23 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
           ...filteredBars.map((bar) => Column(
                 children: [
-                  BarCard(
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => StoreProfile(
+                            name: bar['name'],
+                            address: bar['address'],
+                            image: bar['image'],
+                            tags: List<String>.from(bar['tags']),
+                            desc: bar['desc'],
+                            ),
+                        ),
+                      );
+                    },
+                  
+                  child :BarCard(
                     image: bar['image'],
                     name: bar['name'],
                     address: bar['address'],
@@ -345,6 +374,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     darkBlue: darkBlue,
                     accentYellow: accentYellow,
                     cardBlue: cardBlue,
+                  ),
                   ),
                   const SizedBox(height: 16),
                 ],
@@ -548,3 +578,4 @@ class BarCard extends StatelessWidget {
     );
   }
 }
+
