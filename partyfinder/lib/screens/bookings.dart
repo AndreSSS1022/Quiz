@@ -164,22 +164,22 @@ class _BookingsState extends State<Bookings> {
   Widget _buildReservaCard(Map<String, String> reserva, int index) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [cardColor, cardColor.withOpacity(0.7)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: primaryColor.withOpacity(0.3)),
-        boxShadow: [
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [cardColor, cardColor.withAlpha((0.7 * 255).round())],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: primaryColor.withAlpha((0.3 * 255).round())),
+          boxShadow: [
           BoxShadow(
-            color: primaryColor.withOpacity(0.2),
+            color: primaryColor.withAlpha((0.2 * 255).round()),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
         ],
-      ),
+        ),
       child: ListTile(
         leading: Icon(Icons.music_note_rounded, color: accentColor, size: 30),
         title: Text(

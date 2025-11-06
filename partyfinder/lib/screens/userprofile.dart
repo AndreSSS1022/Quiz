@@ -86,7 +86,7 @@ class _UserProfileState extends State<UserProfile> with SingleTickerProviderStat
               leading: Container(
                 margin: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.5),
+                  color: Colors.black.withAlpha((0.5 * 255).round()),
                   shape: BoxShape.circle,
                 ),
                 child: IconButton(
@@ -98,7 +98,7 @@ class _UserProfileState extends State<UserProfile> with SingleTickerProviderStat
                 Container(
                   margin: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.5),
+                    color: Colors.black.withAlpha((0.5 * 255).round()),
                     shape: BoxShape.circle,
                   ),
                   child: IconButton(

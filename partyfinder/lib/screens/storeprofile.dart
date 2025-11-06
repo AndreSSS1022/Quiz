@@ -117,10 +117,10 @@ class _StoreProfileState extends State<StoreProfile> with SingleTickerProviderSt
               expandedHeight: 320,
               pinned: true,
               backgroundColor: darkBlue,
-              leading: Container(
+                leading: Container(
                 margin: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.5),
+                  color: Colors.black.withAlpha((0.5 * 255).round()),
                   shape: BoxShape.circle,
                 ),
                 child: IconButton(
@@ -132,7 +132,7 @@ class _StoreProfileState extends State<StoreProfile> with SingleTickerProviderSt
                 Container(
                   margin: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.5),
+                    color: Colors.black.withAlpha((0.5 * 255).round()),
                     shape: BoxShape.circle,
                   ),
                   child: IconButton(
@@ -150,7 +150,7 @@ class _StoreProfileState extends State<StoreProfile> with SingleTickerProviderSt
                 Container(
                   margin: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.5),
+                    color: Colors.black.withAlpha((0.5 * 255).round()),
                     shape: BoxShape.circle,
                   ),
                   child: IconButton(
@@ -172,10 +172,10 @@ class _StoreProfileState extends State<StoreProfile> with SingleTickerProviderSt
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Colors.black.withOpacity(0.7),
-                            Colors.transparent,
-                            Colors.black.withOpacity(0.8),
-                          ],
+                                  Colors.black.withAlpha((0.7 * 255).round()),
+                                  Colors.transparent,
+                                  Colors.black.withAlpha((0.8 * 255).round()),
+                                ],
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                         ),
@@ -260,9 +260,9 @@ class _StoreProfileState extends State<StoreProfile> with SingleTickerProviderSt
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: cardBlue,
-          boxShadow: [
+            boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withAlpha((0.3 * 255).round()),
               blurRadius: 10,
               offset: const Offset(0, -2),
             ),

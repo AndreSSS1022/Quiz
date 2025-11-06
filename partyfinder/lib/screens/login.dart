@@ -65,7 +65,7 @@ class _LoginScreenState extends State<Login> {
           BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
             child: Container(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withAlpha((0.3 * 255).round()),
             ),
           ),
           Center(

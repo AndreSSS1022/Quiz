@@ -8,8 +8,10 @@ import 'package:partyfinder/screens/home.dart';
 import 'package:partyfinder/screens/register.dart';
 import 'package:partyfinder/screens/userprofile.dart';
 import 'package:partyfinder/screens/storeprofile.dart';
+import 'package:partyfinder/auth_service.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -29,7 +31,7 @@ class MyApp extends StatelessWidget {
         ),
         cardColor: const Color(0xFF222B45),
       ),
-      home: const Login(),
+      home: const SplashScreen(),
       debugShowCheckedModeBanner: false,
       routes: {
         '/login': (context) => const Login(),
@@ -50,6 +52,47 @@ class MyApp extends StatelessWidget {
         Locale('es', 'ES'),
         Locale('en', 'US'),
       ],
+    );
+  }
+}
+
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _checkAuth();
+  }
+
+  Future<void> _checkAuth() async {
+    final token = await AuthService().getToken();
+    if (!mounted) return;
+    if (token != null) {
+      Navigator.pushReplacementNamed(context, '/home');
+    } else {
+      Navigator.pushReplacementNamed(context, '/login');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            CircularProgressIndicator(),
+            SizedBox(height: 16),
+            Text('Cargando...'),
+          ],
+        ),
+      ),
     );
   }
 }

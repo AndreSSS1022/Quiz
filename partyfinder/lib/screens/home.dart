@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../auth_service.dart';
-import 'mapa.dart';
 import 'storeprofile.dart'; // <-- agregar
 
 class MyHomePage extends StatefulWidget {
@@ -70,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
     },
   ];
 
-  int _currentBar = 0;
+  // int _currentBar = 0; // previously used for carousel indicator (removed)
 
   void _toggleSearch() {
     setState(() {
@@ -260,9 +259,11 @@ class _MyHomePageState extends State<MyHomePage> {
               leading: Icon(Icons.logout, color: Colors.red, size: 28),
               title: const Text('Cerrar sesión', style: TextStyle(fontSize: 18, color: Colors.red)),
               onTap: () async {
+                // Capture NavigatorState (not BuildContext) before the async gap.
+                final navigator = Navigator.of(context);
                 await AuthService().logout();
                 if (!mounted) return;
-                Navigator.pushReplacementNamed(context, '/login');
+                navigator.pushReplacementNamed('/login');
               },
             ),
           ],
@@ -286,7 +287,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       Container(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
-                            colors: [Colors.black.withOpacity(0.5), Colors.transparent],
+                            colors: [Colors.black.withAlpha((0.5 * 255).round()), Colors.transparent],
                             begin: Alignment.bottomCenter,
                             end: Alignment.topCenter,
                           ),
@@ -309,7 +310,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   shadows: [
                                     Shadow(
                                       blurRadius: 16,
-                                      color: Colors.white.withOpacity(0.7),
+                                      color: Colors.white.withAlpha((0.7 * 255).round()),
                                     ),
                                   ],
                                 ),
@@ -337,11 +338,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 autoPlayInterval: const Duration(seconds: 5),
                 enlargeCenterPage: true,
                 viewportFraction: 0.9,
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    _currentBar = index;
-                  });
-                },
               ),
             ),
             const SizedBox(height: 12),
@@ -396,78 +392,38 @@ class _MyHomePageState extends State<MyHomePage> {
         selectedItemColor: midBlue,
         unselectedItemColor: Colors.black54,
         currentIndex: _selectedIndex,
-        // Manejar la navegación aquí: actualizar índice y abrir mapa en modal deslizable
-        onTap: (i) async {
+        // Navegación: Mapa, Categorías, Reservas, Perfil
+        onTap: (i) {
           setState(() => _selectedIndex = i);
           if (i == 0) {
-            await showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              backgroundColor: Colors.transparent,
-              builder: (context) {
-                return DraggableScrollableSheet(
-                  expand: false,
-                  initialChildSize: 0.9,
-                  minChildSize: 0.4,
-                  maxChildSize: 1.0,
-                  builder: (context, scrollController) {
-                    return Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                        child: SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.9,
-                          child: Mapa(embed: true),
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-            );
+            Navigator.pushNamed(context, '/mapa');
+          } else if (i == 1) {
+            Navigator.pushNamed(context, '/categories');
+          } else if (i == 2) {
+            Navigator.pushNamed(context, '/bookings');
+          } else if (i == 3) {
+            Navigator.pushNamed(context, '/userprofile');
           }
         },
         type: BottomNavigationBarType.fixed,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
         items: [
           BottomNavigationBarItem(
-            icon: CircleAvatar(
-              backgroundColor: _selectedIndex == 0 ? midBlue : Colors.white,
-              child: Icon(Icons.place, color: _selectedIndex == 0 ? Colors.white : Colors.black),
-            ),
-            label: '',
+            icon: Icon(Icons.place),
+            label: 'Mapa',
           ),
           BottomNavigationBarItem(
-            icon: CircleAvatar(
-              backgroundColor: _selectedIndex == 1 ? midBlue : Colors.white,
-              child: Icon(Icons.favorite, color: _selectedIndex == 1 ? Colors.white : Colors.black),
-            ),
-            label: '',
+            icon: Icon(Icons.category),
+            label: 'Categorías',
           ),
           BottomNavigationBarItem(
-            icon: CircleAvatar(
-              backgroundColor: _selectedIndex == 2 ? midBlue : Colors.white,
-              child: Icon(Icons.person, color: _selectedIndex == 2 ? Colors.white : Colors.black),
-            ),
-            label: '',
+            icon: Icon(Icons.book_online),
+            label: 'Reservas',
           ),
           BottomNavigationBarItem(
-            icon: CircleAvatar(
-              backgroundColor: _selectedIndex == 3 ? midBlue : Colors.white,
-              child: Icon(Icons.phone, color: _selectedIndex == 3 ? Colors.white : Colors.black),
-            ),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: CircleAvatar(
-              backgroundColor: _selectedIndex == 4 ? midBlue : Colors.white,
-              child: Icon(Icons.notifications, color: _selectedIndex == 4 ? Colors.white : Colors.black),
-            ),
-            label: '',
+            icon: Icon(Icons.person),
+            label: 'Perfil',
           ),
         ],
       ),

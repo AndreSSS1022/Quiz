@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthService {
-  static const String baseUrl = 'https://flaskapiexample-production.up.railway.app';
+  static const String baseUrl = 'https://apipartyfinder-production.up.railway.app/';
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   Future<String?> login(String username, String password) async {
