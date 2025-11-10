@@ -8,7 +8,6 @@ class Bookings extends StatefulWidget {
 }
 
 class _BookingsState extends State<Bookings> {
-  // 🎨 Paleta de colores (variables globales del tema)
   final Color primaryColor = const Color(0xFF00C2FF);
   final Color secondaryColor = const Color(0xFFB026FF);
   final Color backgroundColor = const Color(0xFF0A0A23);
@@ -16,10 +15,10 @@ class _BookingsState extends State<Bookings> {
   final Color textColor = Colors.white;
   final Color accentColor = const Color(0xFFFF4081);
 
-  // 📝 Lista simulada de reservas
+
   List<Map<String, String>> reservas = [];
 
-  // 🧾 Controladores del formulario
+
   final _formKey = GlobalKey<FormState>();
   final _eventoController = TextEditingController();
   final _fechaController = TextEditingController();
@@ -33,7 +32,7 @@ class _BookingsState extends State<Bookings> {
     super.dispose();
   }
 
-  // ➕ Función para agregar una nueva reserva
+  
   void _agregarReserva() {
     if (_formKey.currentState!.validate()) {
       setState(() {
@@ -54,7 +53,7 @@ class _BookingsState extends State<Bookings> {
     }
   }
 
-  // 🪩 Diálogo para crear nueva reserva
+
   void _mostrarDialogoNuevaReserva() {
     showDialog(
       context: context,
@@ -160,26 +159,26 @@ class _BookingsState extends State<Bookings> {
     );
   }
 
-  // 💡 Tarjeta personalizada de reserva
+
   Widget _buildReservaCard(Map<String, String> reserva, int index) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [cardColor, cardColor.withAlpha((0.7 * 255).round())],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: primaryColor.withAlpha((0.3 * 255).round())),
-          boxShadow: [
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [cardColor, cardColor.withOpacity(0.7)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: primaryColor.withOpacity(0.3)),
+        boxShadow: [
           BoxShadow(
-            color: primaryColor.withAlpha((0.2 * 255).round()),
+            color: primaryColor.withOpacity(0.2),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
         ],
-        ),
+      ),
       child: ListTile(
         leading: Icon(Icons.music_note_rounded, color: accentColor, size: 30),
         title: Text(

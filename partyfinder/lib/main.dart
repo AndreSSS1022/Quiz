@@ -6,9 +6,8 @@ import 'package:partyfinder/screens/categories.dart';
 import 'package:partyfinder/screens/login.dart';
 import 'package:partyfinder/screens/home.dart';
 import 'package:partyfinder/screens/register.dart';
-import 'package:partyfinder/screens/userprofile.dart';
 import 'package:partyfinder/screens/storeprofile.dart';
-import 'package:partyfinder/auth_service.dart';
+import 'package:partyfinder/utils/session_manager.dart'; // ✅ Importamos el SessionManager
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,10 +36,9 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const Login(),
         '/home': (context) => const MyHomePage(title: 'PartyFinder'),
         '/register': (context) => const Register(),
-        '/mapa':(context)=> const Mapa(),
+        '/mapa': (context) => const Mapa(),
         '/bookings': (context) => const Bookings(),
-        '/categories': (context) => const Categories(), 
-        '/userprofile': (context) => const UserProfile(),
+        '/categories': (context) => const Categories(),
         '/storeprofile': (context) => const StoreProfile(),
       },
       localizationsDelegates: const [
@@ -67,13 +65,18 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _checkAuth();
+    _checkSession();
   }
 
-  Future<void> _checkAuth() async {
-    final token = await AuthService().getToken();
+  Future<void> _checkSession() async {
+    // Espera un poco para mostrar el splash
+    await Future.delayed(const Duration(seconds: 1));
+
+    final isLogged = await SessionManager.isLoggedIn();
+
     if (!mounted) return;
-    if (token != null) {
+
+    if (isLogged) {
       Navigator.pushReplacementNamed(context, '/home');
     } else {
       Navigator.pushReplacementNamed(context, '/login');
@@ -82,14 +85,17 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: const [
-            CircularProgressIndicator(),
+          children: [
+            CircularProgressIndicator(color: Color(0xFF185ADB)),
             SizedBox(height: 16),
-            Text('Cargando...'),
+            Text(
+              'Cargando...',
+              style: TextStyle(color: Colors.white70, fontSize: 16),
+            ),
           ],
         ),
       ),

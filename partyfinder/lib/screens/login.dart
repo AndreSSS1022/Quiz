@@ -1,8 +1,8 @@
-
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 import '../auth_service.dart';
+import 'package:partyfinder/utils/session_manager.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -10,7 +10,6 @@ class Login extends StatefulWidget {
   @override
   State<Login> createState() => _LoginScreenState();
 }
-
 
 class _LoginScreenState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
@@ -28,19 +27,27 @@ class _LoginScreenState extends State<Login> {
     super.dispose();
   }
 
-
   Future<void> _login() async {
     if (_formKey.currentState?.validate() != true) return;
+
+    setState(() => _error = null);
+
+    // Intentar login en el servidor
     final token = await _authService.login(
       _emailCtrl.text.trim(),
       _passCtrl.text,
     );
+
     if (token != null) {
+      // Guardar token en sesión segura
+      await SessionManager.saveToken(token);
+
       // Intentar autenticación biométrica
       final didAuth = await _localAuth.authenticate(
-        localizedReason: 'Autentícate para acceder',
+        localizedReason: 'Autentícate para acceder a tu cuenta',
         options: const AuthenticationOptions(biometricOnly: true),
       );
+
       if (didAuth) {
         if (!mounted) return;
         Navigator.pushReplacementNamed(context, '/home');
@@ -58,10 +65,7 @@ class _LoginScreenState extends State<Login> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset(
-            'fondo.png', 
-            fit: BoxFit.cover,
-          ),
+          Image.asset('fondo.png', fit: BoxFit.cover),
           BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
             child: Container(
@@ -92,13 +96,16 @@ class _LoginScreenState extends State<Login> {
                       decoration: InputDecoration(
                         labelText: 'Correo electrónico',
                         labelStyle: const TextStyle(color: Colors.white70),
-                        prefixIcon: const Icon(Icons.email, color: Colors.white70),
+                        prefixIcon:
+                            const Icon(Icons.email, color: Colors.white70),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Colors.white24),
+                          borderSide:
+                              const BorderSide(color: Colors.white24),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Colors.white70),
+                          borderSide:
+                              const BorderSide(color: Colors.white70),
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
@@ -106,7 +113,8 @@ class _LoginScreenState extends State<Login> {
                         if (v == null || v.trim().isEmpty) {
                           return 'Ingresa tu correo';
                         }
-                        final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                        final emailRegex = RegExp(
+                            r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
                         if (!emailRegex.hasMatch(v.trim())) {
                           return 'Ingresa un correo válido';
                         }
@@ -121,23 +129,33 @@ class _LoginScreenState extends State<Login> {
                       decoration: InputDecoration(
                         labelText: 'Contraseña',
                         labelStyle: const TextStyle(color: Colors.white70),
-                        prefixIcon: const Icon(Icons.lock, color: Colors.white70),
+                        prefixIcon:
+                            const Icon(Icons.lock, color: Colors.white70),
                         suffixIcon: IconButton(
-                          icon: Icon(_obscure ? Icons.visibility : Icons.visibility_off,
-                              color: Colors.white70),
-                          onPressed: () => setState(() => _obscure = !_obscure),
+                          icon: Icon(
+                            _obscure
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: Colors.white70,
+                          ),
+                          onPressed: () =>
+                              setState(() => _obscure = !_obscure),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Colors.white24),
+                          borderSide:
+                              const BorderSide(color: Colors.white24),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Colors.white70),
+                          borderSide:
+                              const BorderSide(color: Colors.white70),
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                       validator: (v) =>
-                          (v == null || v.length < 6) ? 'Mínimo 6 caracteres' : null,
+                          (v == null || v.length < 6)
+                              ? 'Mínimo 6 caracteres'
+                              : null,
                     ),
                     const SizedBox(height: 20),
                     SizedBox(
@@ -145,7 +163,8 @@ class _LoginScreenState extends State<Login> {
                       child: ElevatedButton(
                         onPressed: _login,
                         style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          padding:
+                              const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -157,7 +176,8 @@ class _LoginScreenState extends State<Login> {
                     ),
                     const SizedBox(height: 12),
                     TextButton(
-                      onPressed: () => Navigator.pushNamed(context, '/register'),
+                      onPressed: () =>
+                          Navigator.pushNamed(context, '/register'),
                       child: const Text(
                         '¿No tienes cuenta? Regístrate',
                         style: TextStyle(color: Colors.white70),
@@ -166,7 +186,10 @@ class _LoginScreenState extends State<Login> {
                     if (_error != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 16),
-                        child: Text(_error!, style: const TextStyle(color: Colors.red)),
+                        child: Text(
+                          _error!,
+                          style: const TextStyle(color: Colors.red),
+                        ),
                       ),
                   ],
                 ),
