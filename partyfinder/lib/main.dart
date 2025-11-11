@@ -7,6 +7,7 @@ import 'package:partyfinder/screens/login.dart';
 import 'package:partyfinder/screens/home.dart';
 import 'package:partyfinder/screens/register.dart';
 import 'package:partyfinder/screens/storeprofile.dart';
+import 'package:partyfinder/screens/userprofile.dart';
 import 'package:partyfinder/utils/session_manager.dart'; // ✅ Importamos el SessionManager
 
 void main() {
@@ -40,6 +41,7 @@ class MyApp extends StatelessWidget {
         '/bookings': (context) => const Bookings(),
         '/categories': (context) => const Categories(),
         '/storeprofile': (context) => const StoreProfile(),
+        '/userprofile': (context) => const UserProfile(),
       },
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,

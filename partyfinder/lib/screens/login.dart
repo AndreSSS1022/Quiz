@@ -65,7 +65,7 @@ class _LoginScreenState extends State<Login> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset('fondo.png', fit: BoxFit.cover),
+          Image.asset('assets/fondo.png', fit: BoxFit.cover),
           BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
             child: Container(

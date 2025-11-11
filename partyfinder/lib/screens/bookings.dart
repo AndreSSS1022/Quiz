@@ -165,15 +165,15 @@ class _BookingsState extends State<Bookings> {
       margin: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [cardColor, cardColor.withOpacity(0.7)],
+          colors: [cardColor, cardColor.withAlpha((0.7 * 255).round())],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: primaryColor.withOpacity(0.3)),
+        border: Border.all(color: primaryColor.withAlpha((0.3 * 255).round())),
         boxShadow: [
           BoxShadow(
-            color: primaryColor.withOpacity(0.2),
+            color: primaryColor.withAlpha((0.2 * 255).round()),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),

@@ -418,7 +418,7 @@ class _StoreProfileState extends State<StoreProfile> with SingleTickerProviderSt
                     color: midBlue,
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 10),
                 _buildServiceItem(Icons.wifi, 'WiFi Gratis'),
                 _buildServiceItem(Icons.local_parking, 'Parqueadero'),
                 _buildServiceItem(Icons.security, 'Seguridad 24/7'),
@@ -447,9 +447,10 @@ class _StoreProfileState extends State<StoreProfile> with SingleTickerProviderSt
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
           child: Padding(
             padding: const EdgeInsets.all(20),
-            child: Row(
-              children: [
-                Container(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final isNarrow = constraints.maxWidth < 420;
+                final dateBox = Container(
                   width: 70,
                   height: 70,
                   decoration: BoxDecoration(
@@ -462,12 +463,13 @@ class _StoreProfileState extends State<StoreProfile> with SingleTickerProviderSt
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
                         event['date'].split(' ')[0],
                         style: TextStyle(
                           color: accentYellow,
-                          fontSize: 14,
+                          fontSize: 13,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -475,7 +477,7 @@ class _StoreProfileState extends State<StoreProfile> with SingleTickerProviderSt
                         event['date'].split(' ')[1],
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 20,
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -483,14 +485,14 @@ class _StoreProfileState extends State<StoreProfile> with SingleTickerProviderSt
                         event['date'].split(' ')[2],
                         style: const TextStyle(
                           color: Colors.white70,
-                          fontSize: 12,
+                          fontSize: 11,
                         ),
                       ),
                     ],
                   ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
+                );
+
+                final details = Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -501,6 +503,8 @@ class _StoreProfileState extends State<StoreProfile> with SingleTickerProviderSt
                           fontWeight: FontWeight.bold,
                           color: midBlue,
                         ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 4),
                       Text(
@@ -509,34 +513,39 @@ class _StoreProfileState extends State<StoreProfile> with SingleTickerProviderSt
                           color: Colors.white70,
                           fontSize: 14,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 6),
                       Row(
                         children: [
                           Icon(Icons.access_time, size: 14, color: accentYellow),
                           const SizedBox(width: 4),
-                          Text(
-                            event['time'],
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 13,
+                          Flexible(
+                            child: Text(
+                              event['time'],
+                              style: const TextStyle(color: Colors.white70),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           const SizedBox(width: 12),
                           Icon(Icons.attach_money, size: 14, color: accentYellow),
-                          Text(
-                            event['price'],
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 13,
+                          Flexible(
+                            child: Text(
+                              event['price'],
+                              style: const TextStyle(color: Colors.white70),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],
                       ),
                     ],
                   ),
-                ),
-                ElevatedButton(
+                );
+
+                final reserveButton = ElevatedButton(
                   onPressed: () {
                     _showReservationBottomSheet(context);
                   },
@@ -552,8 +561,28 @@ class _StoreProfileState extends State<StoreProfile> with SingleTickerProviderSt
                     'Reservar',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                ),
-              ],
+                );
+
+                if (isNarrow) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(children: [dateBox, const SizedBox(width: 12), Expanded(child: details.child)]),
+                      const SizedBox(height: 12),
+                      Align(alignment: Alignment.centerRight, child: reserveButton),
+                    ],
+                  );
+                }
+
+                return Row(
+                  children: [
+                    dateBox,
+                    const SizedBox(width: 16),
+                    details,
+                    reserveButton,
+                  ],
+                );
+              },
             ),
           ),
         );
@@ -801,7 +830,7 @@ class _StoreProfileState extends State<StoreProfile> with SingleTickerProviderSt
 
   Widget _buildServiceItem(IconData icon, String text) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
           Icon(icon, color: midBlue, size: 20),

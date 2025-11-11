@@ -1,6 +1,7 @@
 
 
 import 'package:flutter/material.dart';
+import '../utils/session_manager.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
@@ -17,6 +18,21 @@ class _UserProfileState extends State<UserProfile> with SingleTickerProviderStat
   final Color accentYellow = const Color(0xFFFFD93D);
 
   late TabController _tabController;
+  String? _firstName;
+  String? _lastName;
+  String? _email;
+  String? _birthDate;
+
+  String get _displayName {
+    if ((_firstName ?? '').isEmpty && (_lastName ?? '').isEmpty) return 'Andres Martinez';
+    return '${_firstName ?? ''}${(_firstName != null && _firstName!.isNotEmpty && _lastName != null && _lastName!.isNotEmpty) ? ' ' : ''}${_lastName ?? ''}'.trim();
+  }
+
+  String get _handle {
+    if ((_firstName ?? '').isEmpty) return '@andres_party';
+    final handle = '${_firstName!.toLowerCase()}${_lastName != null && _lastName!.isNotEmpty ? '_${_lastName!.toLowerCase()}' : ''}';
+    return '@${handle.replaceAll(' ', '')}';
+  }
 
   // Simulación de datos de red social
   final List<Map<String, dynamic>> userPosts = [
@@ -64,6 +80,21 @@ class _UserProfileState extends State<UserProfile> with SingleTickerProviderStat
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
+    _loadNames();
+  }
+
+  Future<void> _loadNames() async {
+    final f = await SessionManager.getFirstName();
+    final l = await SessionManager.getLastName();
+    final e = await SessionManager.getEmail();
+    final b = await SessionManager.getBirthDate();
+    if (!mounted) return;
+    setState(() {
+      _firstName = f;
+      _lastName = l;
+      _email = e;
+      _birthDate = b;
+    });
   }
 
   @override
@@ -80,7 +111,7 @@ class _UserProfileState extends State<UserProfile> with SingleTickerProviderStat
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
             SliverAppBar(
-              expandedHeight: 320,
+              expandedHeight: 280,
               pinned: true,
               backgroundColor: darkBlue,
               leading: Container(
@@ -116,86 +147,103 @@ class _UserProfileState extends State<UserProfile> with SingleTickerProviderStat
                       end: Alignment.bottomRight,
                     ),
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const SizedBox(height: 80),
-                      Stack(
-                        children: [
-                          CircleAvatar(
-                            radius: 60,
-                            backgroundImage: const AssetImage('assets/perfil.JPG'),
-                            backgroundColor: Colors.white,
-                          ),
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: Container(
-                              padding: const EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                color: accentYellow,
-                                shape: BoxShape.circle,
-                                border: Border.all(color: Colors.white, width: 2),
-                              ),
-                              child: const Icon(Icons.camera_alt, size: 20, color: Colors.white),
+                  child: SafeArea(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(height: 20),
+                        Stack(
+                          children: [
+                            CircleAvatar(
+                              radius: 45,
+                              backgroundImage: const AssetImage('assets/perfil.JPG'),
+                              backgroundColor: Colors.white,
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      const Text(
-                        'Andres Martinez',
-                        style: TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: Container(
+                                padding: const EdgeInsets.all(3),
+                                decoration: BoxDecoration(
+                                  color: accentYellow,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: Colors.white, width: 2),
+                                ),
+                                child: const Icon(Icons.camera_alt, size: 14, color: Colors.white),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                      const SizedBox(height: 4),
-                      const Text(
-                        '@andres_party',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white70,
+                        const SizedBox(height: 8),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(
+                            _displayName,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          _buildStatColumn('24', 'Posts'),
-                          Container(
-                            height: 40,
-                            width: 1,
-                            color: Colors.white24,
-                            margin: const EdgeInsets.symmetric(horizontal: 20),
+                        const SizedBox(height: 2),
+                        Text(
+                          _handle,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: Colors.white70,
                           ),
-                          _buildStatColumn('156', 'Amigos'),
-                          Container(
-                            height: 40,
-                            width: 1,
-                            color: Colors.white24,
-                            margin: const EdgeInsets.symmetric(horizontal: 20),
-                          ),
-                          _buildStatColumn('89', 'Siguiendo'),
-                        ],
-                      ),
-                    ],
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            _buildStatColumn('24', 'Posts'),
+                            Container(
+                              height: 28,
+                              width: 1,
+                              color: Colors.white24,
+                              margin: const EdgeInsets.symmetric(horizontal: 14),
+                            ),
+                            _buildStatColumn('156', 'Amigos'),
+                            Container(
+                              height: 28,
+                              width: 1,
+                              color: Colors.white24,
+                              margin: const EdgeInsets.symmetric(horizontal: 14),
+                            ),
+                            _buildStatColumn('89', 'Siguiendo'),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                      ],
+                    ),
                   ),
                 ),
               ),
-              bottom: TabBar(
-                controller: _tabController,
-                indicatorColor: accentYellow,
-                indicatorWeight: 3,
-                labelColor: Colors.white,
-                unselectedLabelColor: Colors.white54,
-                tabs: const [
-                  Tab(icon: Icon(Icons.grid_on), text: 'Posts'),
-                  Tab(icon: Icon(Icons.people), text: 'Amigos'),
-                  Tab(icon: Icon(Icons.info), text: 'Info'),
-                  Tab(icon: Icon(Icons.emoji_events), text: 'Logros'),
-                ],
+            ),
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: _SliverAppBarDelegate(
+                TabBar(
+                  controller: _tabController,
+                  indicatorColor: accentYellow,
+                  indicatorWeight: 3,
+                  labelColor: Colors.white,
+                  unselectedLabelColor: Colors.white54,
+                  tabs: const [
+                    Tab(icon: Icon(Icons.grid_on, size: 20), text: 'Posts'),
+                    Tab(icon: Icon(Icons.people, size: 20), text: 'Amigos'),
+                    Tab(icon: Icon(Icons.info, size: 20), text: 'Info'),
+                    Tab(icon: Icon(Icons.emoji_events, size: 20), text: 'Logros'),
+                  ],
+                ),
               ),
             ),
           ];
@@ -215,20 +263,21 @@ class _UserProfileState extends State<UserProfile> with SingleTickerProviderStat
 
   Widget _buildStatColumn(String count, String label) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           count,
           style: TextStyle(
-            fontSize: 22,
+            fontSize: 18,
             fontWeight: FontWeight.bold,
             color: accentYellow,
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 2),
         Text(
           label,
           style: const TextStyle(
-            fontSize: 14,
+            fontSize: 12,
             color: Colors.white70,
           ),
         ),
@@ -265,9 +314,9 @@ class _UserProfileState extends State<UserProfile> with SingleTickerProviderStat
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Andres Martinez',
-                            style: TextStyle(
+                          Text(
+                            _displayName,
+                            style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
@@ -292,7 +341,7 @@ class _UserProfileState extends State<UserProfile> with SingleTickerProviderStat
                 child: Image.asset(
                   post['image'],
                   width: double.infinity,
-                  height: 250,
+                  height: 100,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -302,25 +351,49 @@ class _UserProfileState extends State<UserProfile> with SingleTickerProviderStat
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.favorite_border, color: Colors.white),
-                          onPressed: () {},
-                        ),
-                        Text('${post['likes']}', style: const TextStyle(color: Colors.white)),
-                        const SizedBox(width: 16),
-                        IconButton(
-                          icon: const Icon(Icons.chat_bubble_outline, color: Colors.white),
-                          onPressed: () {},
-                        ),
-                        Text('${post['comments']}', style: const TextStyle(color: Colors.white)),
-                        const Spacer(),
-                        IconButton(
-                          icon: const Icon(Icons.share, color: Colors.white),
-                          onPressed: () {},
-                        ),
-                      ],
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        final isNarrow = constraints.maxWidth < 360;
+                        final actionsRow = Row(
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.favorite_border, color: Colors.white),
+                              onPressed: () {},
+                            ),
+                            Text('${post['likes']}', style: const TextStyle(color: Colors.white)),
+                            const SizedBox(width: 16),
+                            IconButton(
+                              icon: const Icon(Icons.chat_bubble_outline, color: Colors.white),
+                              onPressed: () {},
+                            ),
+                            Text('${post['comments']}', style: const TextStyle(color: Colors.white)),
+                            if (!isNarrow) const Spacer(),
+                            if (!isNarrow)
+                              IconButton(
+                                icon: const Icon(Icons.share, color: Colors.white),
+                                onPressed: () {},
+                              ),
+                          ],
+                        );
+
+                        if (isNarrow) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              actionsRow,
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: IconButton(
+                                  icon: const Icon(Icons.share, color: Colors.white),
+                                  onPressed: () {},
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+
+                        return actionsRow;
+                      },
                     ),
                     Text(
                       post['caption'],
@@ -382,6 +455,19 @@ class _UserProfileState extends State<UserProfile> with SingleTickerProviderStat
 
   // TAB 3: Información
   Widget _buildInfoTab() {
+    // Formatear fecha de nacimiento de YYYY-MM-DD a DD/MM/YYYY
+    String formattedBirthDate = 'No disponible';
+    if (_birthDate != null && _birthDate!.isNotEmpty) {
+      try {
+        final parts = _birthDate!.split('-');
+        if (parts.length == 3) {
+          formattedBirthDate = '${parts[2]}/${parts[1]}/${parts[0]}';
+        }
+      } catch (_) {
+        formattedBirthDate = 'No disponible';
+      }
+    }
+
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -399,13 +485,17 @@ class _UserProfileState extends State<UserProfile> with SingleTickerProviderStat
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: midBlue),
                 ),
                 const SizedBox(height: 16),
-                _buildInfoRow(Icons.email, 'Email', 'andres@ejemplo.com'),
+                _buildInfoRow(Icons.person, 'Nombre', _firstName ?? 'No disponible'),
+                const Divider(color: Colors.white24, height: 24),
+                _buildInfoRow(Icons.person_outline, 'Apellido', _lastName ?? 'No disponible'),
+                const Divider(color: Colors.white24, height: 24),
+                _buildInfoRow(Icons.email, 'Email', _email ?? 'No disponible'),
+                const Divider(color: Colors.white24, height: 24),
+                _buildInfoRow(Icons.cake, 'Fecha de nacimiento', formattedBirthDate),
                 const Divider(color: Colors.white24, height: 24),
                 _buildInfoRow(Icons.phone, 'Teléfono', '+57 300 123 4567'),
                 const Divider(color: Colors.white24, height: 24),
                 _buildInfoRow(Icons.location_city, 'Ciudad', 'Bogotá, Colombia'),
-                const Divider(color: Colors.white24, height: 24),
-                _buildInfoRow(Icons.cake, 'Cumpleaños', '15 de Marzo, 1995'),
               ],
             ),
           ),
@@ -525,6 +615,31 @@ class _UserProfileState extends State<UserProfile> with SingleTickerProviderStat
       label: Text(label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       backgroundColor: color,
     );
+  }
+}
+
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  _SliverAppBarDelegate(this._tabBar);
+
+  final TabBar _tabBar;
+
+  @override
+  double get minExtent => _tabBar.preferredSize.height;
+  @override
+  double get maxExtent => _tabBar.preferredSize.height;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      color: const Color(0xFF0A2342),
+      child: _tabBar,
+    );
+  }
+
+  @override
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+    return false;
   }
 }
 

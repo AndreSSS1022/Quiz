@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../auth_service.dart';
+import '../utils/session_manager.dart';
 import 'storeprofile.dart'; // <-- agregar
 
 class MyHomePage extends StatefulWidget {
@@ -15,6 +16,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 
   String? _jwt;
+  String? _firstName;
   bool _showSearch = false;
   final TextEditingController _searchController = TextEditingController();
   String _searchText = '';
@@ -87,6 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
       });
     });
     _loadToken();
+    _loadUserName();
   }
 
   Future<void> _loadToken() async {
@@ -94,6 +97,15 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _jwt = token;
     });
+  }
+
+  Future<void> _loadUserName() async {
+    final name = await SessionManager.getFirstName();
+    if (mounted) {
+      setState(() {
+        _firstName = name;
+      });
+    }
   }
 
   @override
@@ -207,16 +219,16 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  CircleAvatar(
+                children: [
+                  const CircleAvatar(
                     radius: 36,
                     backgroundImage: AssetImage('assets/perfil.JPG'),
                     backgroundColor: Colors.white,
                   ),
-                  SizedBox(height: 12),
+                  const SizedBox(height: 12),
                   Text(
-                    '¡Hola, Andres!',
-                    style: TextStyle(
+                    '¡Hola, ${_firstName ?? 'Usuario'}!',
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,

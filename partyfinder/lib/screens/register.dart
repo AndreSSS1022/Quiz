@@ -2,6 +2,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../auth_service.dart';
+import '../utils/session_manager.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -13,6 +14,8 @@ class Register extends StatefulWidget {
 class _RegisterScreenState extends State<Register> {
 
   final _formKey = GlobalKey<FormState>();
+  final _firstCtrl = TextEditingController();
+  final _lastCtrl = TextEditingController();
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
   final _confirmCtrl = TextEditingController();
@@ -26,6 +29,8 @@ class _RegisterScreenState extends State<Register> {
 
   @override
   void dispose() {
+    _firstCtrl.dispose();
+    _lastCtrl.dispose();
     _emailCtrl.dispose();
     _passCtrl.dispose();
     _confirmCtrl.dispose();
@@ -58,6 +63,13 @@ class _RegisterScreenState extends State<Register> {
       _passCtrl.text,
     );
     if (ok) {
+      // Guardar nombre, apellido, email y fecha de nacimiento localmente
+      await SessionManager.saveName(_firstCtrl.text.trim(), _lastCtrl.text.trim());
+      await SessionManager.saveEmail(_emailCtrl.text.trim());
+      if (_birthDate != null) {
+        final birthDateStr = '${_birthDate!.year}-${_birthDate!.month.toString().padLeft(2, '0')}-${_birthDate!.day.toString().padLeft(2, '0')}';
+        await SessionManager.saveBirthDate(birthDateStr);
+      }
       setState(() {
         _success = 'Registro exitoso. Ahora puedes iniciar sesión.';
         _error = null;
@@ -121,6 +133,52 @@ class _RegisterScreenState extends State<Register> {
                       ),
                     ),
                     const SizedBox(height: 24),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            controller: _firstCtrl,
+                            style: const TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                              labelText: 'Nombre',
+                              labelStyle: const TextStyle(color: Colors.white70),
+                              prefixIcon: const Icon(Icons.person, color: Colors.white70),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.white24),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.white70),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            validator: (v) => (v == null || v.trim().isEmpty) ? 'Ingresa tu nombre' : null,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: TextFormField(
+                            controller: _lastCtrl,
+                            style: const TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                              labelText: 'Apellido',
+                              labelStyle: const TextStyle(color: Colors.white70),
+                              prefixIcon: const Icon(Icons.person_outline, color: Colors.white70),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.white24),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.white70),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            validator: (v) => (v == null || v.trim().isEmpty) ? 'Ingresa tu apellido' : null,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
                     TextFormField(
                       controller: _emailCtrl,
                       keyboardType: TextInputType.emailAddress,
