@@ -8,14 +8,13 @@ import 'package:geolocator/geolocator.dart';
 
 class Mapa extends StatefulWidget {
   final bool embed; // si true muestra solo el mapa (sin AppBar ni bottom bar)
-  const Mapa({Key? key, this.embed = false}) : super(key: key);
+  const Mapa({super.key, this.embed = false});
 
   @override
   State<Mapa> createState() => _MapaState();
 }
 
 class _MapaState extends State<Mapa> {
-  int _currentIndex = 0;
   double _rotationRadians = 0.0;
 
   StreamSubscription<MagnetometerEvent>? _magSub;
@@ -28,13 +27,9 @@ class _MapaState extends State<Mapa> {
   @override
   void initState() {
     super.initState();
-    // Si el widget se inserta como embed (ej. en un modal deslizante) inicia sensores y ubicación
-    if (widget.embed) {
-      _startMagnetometer();
-      _startLocationHandling();
-      // opcional: mostrar el mapa automáticamente (si usas _currentIndex para controlar)
-      setState(() => _currentIndex = 1);
-    }
+    // Siempre iniciar magnetómetro y ubicación al abrir el mapa
+    _startMagnetometer();
+    _startLocationHandling();
   }
 
   @override
@@ -43,17 +38,6 @@ class _MapaState extends State<Mapa> {
     _cancelPosSubscription();
     // NO llamar a _mapController.dispose() -> flutter_map MapController no tiene dispose()
     super.dispose();
-  }
-
-  void _onNavTap(int index) {
-    setState(() => _currentIndex = index);
-    if (index == 1) {
-      _startMagnetometer();
-      _startLocationHandling();
-    } else {
-      _cancelMagSubscription();
-      _cancelPosSubscription();
-    }
   }
 
   // --- Magnetometer ---
@@ -132,14 +116,18 @@ class _MapaState extends State<Mapa> {
   }
 
   void _updatePosition(Position p) {
+    if (!mounted) return;
+    
     _currentPosition = p;
     final latlng = LatLng(p.latitude, p.longitude);
-    if (mounted) {
-      setState(() {});
-      // Mover mapa suavemente al actualizar posición (usar _currentZoom guardado)
-      try {
-        _mapController.move(latlng, _currentZoom);
-      } catch (_) {}
+    
+    setState(() {});
+    
+    // Mover mapa suavemente a la ubicación actual
+    try {
+      _mapController.move(latlng, _currentZoom);
+    } catch (_) {
+      // Ignorar errores si el controlador no está listo
     }
   }
 
@@ -151,34 +139,22 @@ class _MapaState extends State<Mapa> {
     return Scaffold(
       appBar: AppBar(title: const Text('Mapa')),
       body: _buildMap(),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: _onNavTap,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
-          BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Mapa'),
-        ],
-      ),
     );
   }
 
-  Widget _buildPlaceholder() {
-    return const Center(child: Text('Pantalla principal'));
-  }
 
   Widget _buildMap() {
+    // Usar la ubicación actual del GPS si está disponible, sino un fallback
     final center = _currentPosition != null
         ? LatLng(_currentPosition!.latitude, _currentPosition!.longitude)
-        : LatLng(40.4168, -3.7038); // fallback
+        : LatLng(4.6097, -74.0817); // Bogotá como fallback
 
     return FlutterMap(
       mapController: _mapController,
       options: MapOptions(
-        // flutter_map 8.x usa initialCenter / initialZoom / initialRotation
         initialCenter: center,
         initialZoom: _currentZoom,
         initialRotation: _rotationRadians,
-        // actualizar _currentZoom cuando el usuario haga zoom/manualmente cambie la vista
         onPositionChanged: (pos, hasGesture) {
           final z = pos.zoom;
           if (mounted) {
@@ -188,24 +164,24 @@ class _MapaState extends State<Mapa> {
       ),
       children: [
         TileLayer(
-          urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-          subdomains: const ['a', 'b', 'c'],
+          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+          userAgentPackageName: 'com.partyfinder.app',
         ),
-        MarkerLayer(
-          markers: [
-            Marker(
-              point: center,
-              width: 48,
-              height: 48,
-              // en 8.x Marker requiere 'child' en vez de 'builder'
-              child: const Icon(
-                Icons.my_location,
-                color: Colors.blue,
-                size: 36,
+        if (_currentPosition != null)
+          MarkerLayer(
+            markers: [
+              Marker(
+                point: LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
+                width: 48,
+                height: 48,
+                child: const Icon(
+                  Icons.my_location,
+                  color: Colors.blue,
+                  size: 36,
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
       ],
     );
   }
