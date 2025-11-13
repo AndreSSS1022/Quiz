@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/user_avatar.dart';
 
 class StoreProfile extends StatefulWidget {
   final String name;
@@ -708,10 +709,7 @@ class _StoreProfileState extends State<StoreProfile> with SingleTickerProviderSt
                   children: [
                     Row(
                       children: [
-                        CircleAvatar(
-                          radius: 25,
-                          backgroundImage: AssetImage(review['image']),
-                        ),
+                        UserAvatar(radius: 25, src: review['image']),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Column(

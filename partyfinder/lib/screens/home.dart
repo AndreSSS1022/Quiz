@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import '../widgets/user_avatar.dart';
 import '../auth_service.dart';
 import '../utils/session_manager.dart';
 import 'storeprofile.dart'; // <-- agregar
@@ -220,10 +221,11 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const CircleAvatar(
-                    radius: 36,
-                    backgroundImage: AssetImage('assets/perfil.JPG'),
-                    backgroundColor: Colors.white,
+                  // Avatar del usuario (si existe) mostrado en el header
+                  const SizedBox(
+                    height: 72,
+                    width: 72,
+                    child: Center(child: UserAvatar(radius: 36)),
                   ),
                   const SizedBox(height: 12),
                   Text(

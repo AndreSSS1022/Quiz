@@ -1,7 +1,13 @@
 
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
+
 import '../utils/session_manager.dart';
+import '../widgets/user_avatar.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
@@ -22,6 +28,7 @@ class _UserProfileState extends State<UserProfile> with SingleTickerProviderStat
   String? _lastName;
   String? _email;
   String? _birthDate;
+  String? _imagePath;
 
   String get _displayName {
     if ((_firstName ?? '').isEmpty && (_lastName ?? '').isEmpty) return 'Andres Martinez';
@@ -63,10 +70,10 @@ class _UserProfileState extends State<UserProfile> with SingleTickerProviderStat
   ];
 
   final List<Map<String, String>> friends = [
-    {'name': 'María López', 'image': 'assets/perfil.JPG', 'mutual': '12'},
-    {'name': 'Carlos Ruiz', 'image': 'assets/perfil.JPG', 'mutual': '8'},
-    {'name': 'Ana García', 'image': 'assets/perfil.JPG', 'mutual': '15'},
-    {'name': 'Luis Torres', 'image': 'assets/perfil.JPG', 'mutual': '6'},
+    {'name': 'María López', 'image': '', 'mutual': '12'},
+    {'name': 'Carlos Ruiz', 'image': '', 'mutual': '8'},
+    {'name': 'Ana García', 'image': '', 'mutual': '15'},
+    {'name': 'Luis Torres', 'image': '', 'mutual': '6'},
   ];
 
   final List<Map<String, dynamic>> achievements = [
@@ -88,13 +95,70 @@ class _UserProfileState extends State<UserProfile> with SingleTickerProviderStat
     final l = await SessionManager.getLastName();
     final e = await SessionManager.getEmail();
     final b = await SessionManager.getBirthDate();
+    final img = await SessionManager.getImagePath();
     if (!mounted) return;
     setState(() {
       _firstName = f;
       _lastName = l;
       _email = e;
       _birthDate = b;
+      _imagePath = img;
     });
+  }
+
+  Future<void> _pickImage() async {
+    // Pedir permiso según plataforma y versiones (Android 13+ usa READ_MEDIA_IMAGES)
+    if (!mounted) return;
+    PermissionStatus statusPhotos = PermissionStatus.denied;
+    PermissionStatus statusStorage = PermissionStatus.denied;
+
+    try {
+      if (Platform.isAndroid) {
+        // Pedimos ambos por compatibilidad: storage (pre-Android13) y photos (Android13+)
+        statusPhotos = await Permission.photos.request();
+        statusStorage = await Permission.storage.request();
+      } else if (Platform.isIOS) {
+        statusPhotos = await Permission.photos.request();
+      } else {
+        // otras plataformas: intentar photos
+        statusPhotos = await Permission.photos.request();
+      }
+    } catch (e) {
+      // en caso de que alguna permission no exista en la plataforma, ignoramos
+    }
+
+    final granted = (statusPhotos.isGranted) || (statusStorage.isGranted);
+    if (!granted) {
+      // Si están denegados permanentemente sugerimos ir a ajustes
+      final permanentlyDenied = (statusPhotos.isPermanentlyDenied) || (statusStorage.isPermanentlyDenied);
+      if (permanentlyDenied) {
+        final open = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Permiso requerido'),
+            content: const Text('El permiso para acceder a la galería fue denegado permanentemente. ¿Quieres abrir los ajustes de la aplicación para activarlo?'),
+            actions: [
+              TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancelar')),
+              TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Abrir ajustes')),
+            ],
+          ),
+        );
+        if (open == true) await openAppSettings();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Se necesita permiso para acceder a la galería')));
+      }
+      return;
+    }
+
+    final picker = ImagePicker();
+    final XFile? picked = await picker.pickImage(source: ImageSource.gallery, maxWidth: 1200);
+    if (picked != null) {
+      await SessionManager.saveImagePath(picked.path);
+      if (!mounted) return;
+      setState(() {
+        _imagePath = picked.path;
+      });
+    }
   }
 
   @override
@@ -155,11 +219,7 @@ class _UserProfileState extends State<UserProfile> with SingleTickerProviderStat
                         const SizedBox(height: 20),
                         Stack(
                           children: [
-                            CircleAvatar(
-                              radius: 45,
-                              backgroundImage: const AssetImage('assets/perfil.JPG'),
-                              backgroundColor: Colors.white,
-                            ),
+                            UserAvatar(radius: 45, onTap: _pickImage, src: _imagePath),
                             Positioned(
                               bottom: 0,
                               right: 0,
@@ -305,10 +365,7 @@ class _UserProfileState extends State<UserProfile> with SingleTickerProviderStat
                 padding: const EdgeInsets.all(16),
                 child: Row(
                   children: [
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundImage: const AssetImage('assets/perfil.JPG'),
-                    ),
+                    UserAvatar(radius: 20, src: _imagePath),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
@@ -423,10 +480,17 @@ class _UserProfileState extends State<UserProfile> with SingleTickerProviderStat
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           child: ListTile(
             contentPadding: const EdgeInsets.all(12),
-            leading: CircleAvatar(
-              radius: 30,
-              backgroundImage: AssetImage(friend['image']!),
-            ),
+            leading: Builder(builder: (context) {
+              final name = friend['name'] ?? '';
+              final parts = name.split(' ');
+              String initials = '';
+              for (var p in parts) {
+                if (p.isNotEmpty) initials += p[0];
+                if (initials.length >= 2) break;
+              }
+              initials = initials.toUpperCase();
+              return UserAvatar(radius: 30, src: friend['image'] != null && friend['image']!.isNotEmpty ? friend['image'] : null, initials: initials, useSessionIfNull: false);
+            }),
             title: Text(
               friend['name']!,
               style: const TextStyle(

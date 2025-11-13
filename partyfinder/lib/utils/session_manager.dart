@@ -7,6 +7,7 @@ class SessionManager {
   static const _keyLastName = 'last_name';
   static const _keyEmail = 'email';
   static const _keyBirthDate = 'birth_date';
+  static const _keyImagePath = 'image_path';
 
   // Guarda el token
   static Future<void> saveToken(String token) async {
@@ -70,5 +71,15 @@ class SessionManager {
 
   static Future<String?> getBirthDate() async {
     return await _storage.read(key: _keyBirthDate);
+  }
+
+  // Guarda la ruta local de la imagen de perfil
+  static Future<void> saveImagePath(String path) async {
+    await _storage.write(key: _keyImagePath, value: path);
+  }
+
+  // Obtiene la ruta local de la imagen de perfil
+  static Future<String?> getImagePath() async {
+    return await _storage.read(key: _keyImagePath);
   }
 }
