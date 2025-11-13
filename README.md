@@ -11,9 +11,9 @@ Actualmente el proyecto se encuentra en una fase inicial, donde se ha creado las
 - [x] Creación del proyecto base en Flutter.  
 - [x] Configuración inicial de ramas para el control de versiones.  
 - [x] Desarrollo de la interfaz principal.  
-- [ ] Integración de mapa y ubicación.  
-- [ ] Base de datos de bares y discotecas en Bogotá.  
-- [ ] Funcionalidades de búsqueda y filtrado.  
+- [x] Integración de mapa y ubicación.  
+- [x] Base de datos 
+- [x] Funcionalidades de búsqueda y filtrado.  
 
 ---
 
@@ -43,9 +43,7 @@ Se está utilizando un flujo de trabajo basado en ramas para organizar el desarr
 ---
 
 ## 📌 Próximos pasos
-- Completar el diseño inicial de la interfaz.  
 - Mejorar la vistas de cada procedimiento
-- Añadir ubicaciones e implementar API de geolocalizacion
 ---
 
 ## 👨‍💻 Autor
